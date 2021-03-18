@@ -1,11 +1,23 @@
 import pandas as pd
 import json
 
-def import_data(variable_json, data="output/input_csv"):
+from .errors import ImportActionError
+
+def import_data(variable_json, data="output/input.csv"):
     """
     Imports data and checks that the variables are present
     """
-    pass
+    # load the data into a pandas DataFame
+    test_df = pd.read_csv(data)
+
+    for var_item in variable_json['keyword_args']['2_way_tabs']["variables"]:
+        print(var_item)
+#         if var_item in test_df.columns:
+#             pass
+#         else:
+#             raise ImportActionError
+
+    return test_df
 
 def process_table_request(variables, percent_direction, groupby=False):
     """
