@@ -2,22 +2,34 @@ import pandas as pd
 import pytest
 from safetab.errors import ImportActionError
 
-from safetab.create_tables import import_data, process_table_request, check_for_low_numbers, prettify_tables
+from safetab.create_tables import import_data, process_table_request, check_for_low_numbers, \
+    prettify_tables, output_tables, make_folders
 
-correct_json_dict = {"keyword_args":
-                {"2_way_tabs":
-                    {"variables":["sex","ageband","copd","death"]}}}
+TEST_DATA_CSV = "test_data/test_data.csv"
 
-bad_json_dict = {"keyword_args":
-                {"2_way_tabs":
-                    {"variables":["sex","test","copd","death"]}}}
+correct_json_dict = {"simple_2_way_tabs":
+                           {"tab_type": "2-way",
+                            "variables":["sex","ageband","copd","death"]}}
+
+bad_json_dict = {"simple_2_way_tabs":
+                           {"tab_type": "2-way",
+                            "variables":["sex","test","copd","death"]}}
+
+full_test_json_dict = {"simple_2_way_tabs":
+                           {"tab_type": "2-way",
+                            "variables":["sex","ageband","copd","death"]},
+                       "grouped_by_sex":
+                            {"tab_type": "group_by_2-way",
+                             "variables":["copd","death"],
+                             "group_by": "sex"}
+                       }
 
 def test_import_data():
     # Import test data
-    test = import_data(correct_json_dict, data="test_data/test_data.csv")
+    test = import_data(correct_json_dict, data=TEST_DATA_CSV)
 
     # Check expected 20 rows in dataframe of test data
-    assert(len(test.index) == 20)
+    assert(len(test.index) == 40)
 
     # Check column names match
     assert(list(test.columns.values) == ['patient_id','sex', "ageband", "copd", "death"])
@@ -48,17 +60,17 @@ def test_process_table_request():
     redaction_needed_variables = ['ageband', 'death']
 
     # Import test data
-    test = import_data(correct_json_dict, data="test_data/test_data.csv")
+    test = import_data(correct_json_dict, data=TEST_DATA_CSV)
 
     # pick 2 variables which have sufficient numbers to require no redaction
-    test_table = process_table_request(test, variables=no_redaction_needed_variables)
+    variables, test_table = process_table_request(test, variables=no_redaction_needed_variables)
 
     # check values are correct
     # first row should be female sex. There are 10 women with copd, 10 without
     assert(test_table.iloc[0][0] == 10)
 
     # pick 2 variables which have sufficient numbers to require no redaction
-    test_table_2 = process_table_request(test, variables=redaction_needed_variables)
+    variables2, test_table_2 = process_table_request(test, variables=redaction_needed_variables)
 
     # assert redacted
     assert(test_table_2 == "REDACTED")
@@ -67,9 +79,15 @@ def test_prettify_tables():
 
     # set up table
     no_redaction_needed_variables = ['sex', 'copd']
-    test = import_data(correct_json_dict, data="test_data/test_data.csv")
-    test_table = process_table_request(test, variables=no_redaction_needed_variables)
+    test = import_data(correct_json_dict, data=TEST_DATA_CSV)
+    variables, test_table = process_table_request(test, variables=no_redaction_needed_variables)
 
-    output_str = prettify_tables(table=test_table, variables=no_redaction_needed_variables)
+    output_str = prettify_tables(table=test_table, variables=variables)
     assert(type(output_str), str)
     assert(output_str[:11], "sex vs copd")
+
+
+def test_output_tables():
+    data = TEST_DATA_CSV
+
+    output_tables(data_csv=data, table_config=full_test_json_dict, output_dir="table_outputs")
