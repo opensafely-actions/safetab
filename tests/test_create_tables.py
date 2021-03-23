@@ -19,7 +19,7 @@ full_test_json_dict = {"simple_2_way_tabs":
                             "target": "death"},
                        "grouped_by_sex":
                             {"tab_type": "groupby-2-way",
-                             "variables":["copd","death"],
+                             "variables":["ageband","copd","death"],
                              "groupby": "sex"}
                        }
 
