@@ -4,7 +4,7 @@ from safetab.create_tables import prettify_tables, output_tables
 from safetab.find_save_tools import import_data
 from safetab.redaction_tools import process_table_request
 
-TEST_DATA_CSV = "tests/test_data/test_data.csv"
+TEST_DATA_CSV = "test_data/test_data.csv"
 
 correct_json_dict = {"simple_2_way_tabs":
                            {"tab_type": "2-way",
@@ -23,6 +23,11 @@ full_test_json_dict = {"simple_2_way_tabs":
                              "groupby": "sex"}
                        }
 
+test_group = {"grouped_by_sex":
+                  {"tab_type": "groupby-2-way",
+                   "variables":["copd","death", "ageband"],
+                   "groupby": "sex"}}
+
 def test_prettify_tables():
 
     # set up table
@@ -39,4 +44,4 @@ def test_prettify_tables():
 def test_output_tables():
     data = TEST_DATA_CSV
 
-    output_tables(data_csv=data, table_config=full_test_json_dict, output_dir="tests/test_table_outputs")
+    output_tables(data_csv=data, table_config=full_test_json_dict, output_dir="test_table_outputs")

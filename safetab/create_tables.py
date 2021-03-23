@@ -86,7 +86,7 @@ def output_tables(data_csv, table_config, output_dir=None):
             data = _split_groupby(df, instructions['groupby'])
             permutations = list(itertools.combinations(instructions['variables'], 2))
 
-            groupby_two_way_tables[name_tables] = {"data": data, "permutations": permutations}
+            groupby_two_way_tables[name_tables] = {"grouped_datasets": data, "permutations": permutations}
 
     # run through all two way tables
     for name_tables, table_info in two_way_tables.items():
@@ -104,12 +104,10 @@ def output_tables(data_csv, table_config, output_dir=None):
             
     # run through all the grouped 2 way tables
     for folder_names, table_info in groupby_two_way_tables.items():
-        
-        print("folder_names: ", folder_names)
-        
-        for dataset in table_info['data']:
+
+        for dataset_name, dataset in table_info['grouped_datasets'].items():
             for combination in table_info['permutations']:
-                _output_simple_two_way(dataset, folder_names, list(combination), output_dir=output_dir)
+                _output_simple_two_way(dataset, dataset_name, list(combination), output_dir=output_dir)
     
             
 
@@ -133,13 +131,13 @@ def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None)
 
     if type(new_table) == str:
         # create log of table
-        table_log = f"{table_name_str} - Table REDACTED, small numbers\n"
+        table_log = f"{name_tables} - {table_name_str} - Table REDACTED, small numbers\n"
         # save log entry into master file
         with open(f"{output_dir}/table_log.txt", "a") as file_write:
             file_write.write(table_log)
     else:
         # create log of table
-        table_log = f"{table_name_str} - Table created\n"
+        table_log = f"{name_tables} - {table_name_str} - Table created\n"
         # save log entry into master file
         with open(f"{output_dir}/table_log.txt", "a") as file_write:
             file_write.write(table_log)
@@ -159,6 +157,8 @@ def _split_groupby(df, groupby_variable):
     # for designated column groupby and save
     for index, group in df.groupby(groupby_variable):
         df_dict.update({f"df_{index}": group.reset_index(drop=True)})
+
+    print(df_dict)
     
     # return the dict of dataframes
     return df_dict
