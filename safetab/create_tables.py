@@ -6,8 +6,16 @@ from .find_save_tools import import_data, make_folders
 def prettify_tables(table, variables):
     """
     This takes in a table that has been okayed for redaction and produced 2 nice
-    version of the table, 1 with row percetnages, and 1 with column percentages. These
+    version of the table, 1 with row percentages, and 1 with column percentages. These
     are outputted as a markdown file.
+    
+    Args:
+        table (Dataframe): The table to be converted to markdown, or other format
+        variables (list): The list of variables that this table contains
+        
+    Returns:
+        str (output_str): a string which can be saved as markdown file, which renders
+            3 tables.
     """
     table2 = table.copy()
     percent_col = table2.apply(lambda r: round(((r / r.sum()) * 100), 1), axis=0)
@@ -45,6 +53,14 @@ def output_tables(data_csv, table_config, output_dir=None):
     The redacted tables are logged as redacted.
     Tables that do not need redacting are exported to markdown with titles and
     column and row percentages.
+    
+    Args:
+        data_csv (str): path and name of the csv to be loaded. This is typically the CSV
+            generated from the study definition
+        table_config (dict): this is the table configuration which is passed in as a dict, but
+            is from the project.yaml.
+        output_dir (str): path to a directory to save all the tables. Default is None. If none provided
+            will save tables in the root where function is called.
     """
     # Load data by calling import_data() function
     df = import_data(data=data_csv, variable_json=table_config)
@@ -54,19 +70,44 @@ def output_tables(data_csv, table_config, output_dir=None):
 
     # Sort the json into options
     two_way_tables = {}
+    targeted_two_way_tables = {}
     for name_tables, instructions in table_config.items():
         if instructions['tab_type'] == "2-way":
             two_way_tables[name_tables] = list(itertools.combinations(instructions['variables'], 2))
+        elif instructions['tab_type'] == "target-2-way":
+            targeted_two_way_tables[name_tables] = []
+            for var in instructions['variables']:
+                targeted_two_way_tables[name_tables].append([var, instructions['target']])
 
     # run through all two way tables
     for name_tables, table_info in two_way_tables.items():
 
         # run through create each table and log if table made
         for table_instructions in two_way_tables[name_tables]:
-            output_simple_two_way(df, name_tables, table_instructions, output_dir=output_dir)
+            _output_simple_two_way(df, name_tables, table_instructions, output_dir=output_dir)
+    
+    # run through all the targeted 2 way tables
+    for name_tables, table_info in targeted_two_way_tables.items():
+
+        # run through create each table and log if table made
+        for table_instructions in targeted_two_way_tables[name_tables]:
+            _output_simple_two_way(df, name_tables, table_instructions, output_dir=output_dir)
 
 
-def output_simple_two_way(df, name_tables, table_instructions, output_dir=None):
+def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None):
+    """
+    This function generated simple 2 way tables given some inputs.
+    
+    Args:
+        df (Dataframe): the data to be used to generate the table. This is data that has
+            already been through the import_data() and is a Dataframe.
+        name_tables (str): this is the name of the tables to be generated and is user
+            defined in the project.yaml file and imported in as a Python dict.
+        table_instructions: this is the information in the project.yaml file that is imported
+            in as a Python dict, and contains the instructions for the type of table to be generated
+        output (str or None): this the sub folder that these tables should be saved in.
+
+    """
     variable_names, new_table = process_table_request(df, table_instructions)
     table_name_str = f"{variable_names[0]} vs {variable_names[1]}"
 
