@@ -3,6 +3,7 @@ import itertools
 from .redaction_tools import process_table_request
 from .find_save_tools import import_data, make_folders
 
+
 def prettify_tables(table, variables):
     """
     This takes in a table that has been okayed for redaction and produced 2 nice
@@ -71,13 +72,21 @@ def output_tables(data_csv, table_config, output_dir=None):
     # Sort the json into options
     two_way_tables = {}
     targeted_two_way_tables = {}
+    groupby_two_way_tables = {}
     for name_tables, instructions in table_config.items():
         if instructions['tab_type'] == "2-way":
             two_way_tables[name_tables] = list(itertools.combinations(instructions['variables'], 2))
+        
         elif instructions['tab_type'] == "target-2-way":
             targeted_two_way_tables[name_tables] = []
             for var in instructions['variables']:
                 targeted_two_way_tables[name_tables].append([var, instructions['target']])
+        
+        elif instructions['tab_type'] == "groupby-2-way":
+            data = _split_groupby(df, instructions['groupby'])
+            permutations = list(itertools.combinations(instructions['variables'], 2))
+
+            groupby_two_way_tables[name_tables] = {"data": data, "permutations": permutations}
 
     # run through all two way tables
     for name_tables, table_info in two_way_tables.items():
@@ -92,6 +101,17 @@ def output_tables(data_csv, table_config, output_dir=None):
         # run through create each table and log if table made
         for table_instructions in targeted_two_way_tables[name_tables]:
             _output_simple_two_way(df, name_tables, table_instructions, output_dir=output_dir)
+            
+    # run through all the grouped 2 way tables
+    for folder_names, table_info in groupby_two_way_tables.items():
+        
+        print("folder_names: ", folder_names)
+        
+        for dataset in table_info['data']:
+            for combination in table_info['permutations']:
+                _output_simple_two_way(dataset, folder_names, list(combination), output_dir=output_dir)
+    
+            
 
 
 def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None):
@@ -131,3 +151,15 @@ def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None)
         with open(f"{output_dir}/{name_tables}/{table_name_str}.md", "w") as file_write:
             file_write.write(pretty_new_table)
 
+def _split_groupby(df, groupby_variable):
+    
+    # empty dict that collects the grouped dataframes
+    df_dict = {}
+    
+    # for designated column groupby and save
+    for index, group in df.groupby(groupby_variable):
+        df_dict.update({f"df_{index}": group.reset_index(drop=True)})
+    
+    # return the dict of dataframes
+    return df_dict
+    
