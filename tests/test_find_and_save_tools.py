@@ -18,8 +18,8 @@ def test_import_data():
     # Import test data
     test = import_data(correct_json_dict, data=TEST_DATA_CSV)
 
-    # Check expected 20 rows in dataframe of test data
-    assert(len(test.index) == 40)
+    # Check expected 60 rows in dataframe of test data
+    assert(len(test.index) == 60)
 
     # Check column names match
     assert(list(test.columns.values) == ['patient_id','sex', "ageband", "copd", "death"])

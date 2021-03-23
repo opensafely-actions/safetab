@@ -19,14 +19,10 @@ full_test_json_dict = {"simple_2_way_tabs":
                             "target": "death"},
                        "grouped_by_sex":
                             {"tab_type": "groupby-2-way",
-                             "variables":["copd","death", "ageband"],
+                             "variables":["copd","death"],
                              "groupby": "sex"}
                        }
 
-test_group = {"grouped_by_sex":
-                  {"tab_type": "groupby-2-way",
-                   "variables":["copd","death", "ageband"],
-                   "groupby": "sex"}}
 
 def test_prettify_tables():
 
@@ -38,7 +34,6 @@ def test_prettify_tables():
     output_str = prettify_tables(table=test_table, variables=variables)
     assert(isinstance(output_str, str))
     assert(output_str[:11] == "sex vs copd")
-
 
 
 def test_output_tables():

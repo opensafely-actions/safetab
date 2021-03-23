@@ -28,7 +28,7 @@ def test_check_for_low_numbers():
 
 def test_process_table_request():
     no_redaction_needed_variables = ['sex', 'copd']
-    redaction_needed_variables = ['ageband', 'death']
+    redaction_needed_variables = ['ageband', 'sex']
 
     # Import test data
     test = import_data(correct_json_dict, data=TEST_DATA_CSV)
@@ -37,11 +37,12 @@ def test_process_table_request():
     variables, test_table = process_table_request(test, variables=no_redaction_needed_variables)
 
     # check values are correct
-    # first row should be female sex. There are 10 women with copd, 10 without
-    assert(test_table.iloc[0][0] == 10)
+    # first row should be female sex. There are 16 women with copd, 16 without
+    assert(test_table.iloc[0][0] == 16)
 
     # pick 2 variables which have sufficient numbers to require no redaction
     variables2, test_table_2 = process_table_request(test, variables=redaction_needed_variables)
 
     # assert redacted
+    # print("TABLE 2: ", test_table_2)
     assert(test_table_2 == "REDACTED")
