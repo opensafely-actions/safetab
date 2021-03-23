@@ -107,12 +107,16 @@ def output_tables(data_csv, table_config, output_dir=None):
 
         for dataset_name, dataset in table_info['grouped_datasets'].items():
             for combination in table_info['permutations']:
-                _output_simple_two_way(dataset, dataset_name, list(combination), output_dir=output_dir)
+                _output_simple_two_way(dataset,
+                                       folder_names,
+                                       list(combination),
+                                       output_dir=output_dir,
+                                       additional_info=dataset_name)
     
             
 
 
-def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None):
+def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None, additional_info=None):
     """
     This function generated simple 2 way tables given some inputs.
     
@@ -124,10 +128,15 @@ def _output_simple_two_way(df, name_tables, table_instructions, output_dir=None)
         table_instructions: this is the information in the project.yaml file that is imported
             in as a Python dict, and contains the instructions for the type of table to be generated
         output (str or None): this the sub folder that these tables should be saved in.
+        additional_info (str or None): this additional argument for labelling tables that look similar
+            to each other for example copd vs death, in both sexes.
 
     """
     variable_names, new_table = process_table_request(df, table_instructions)
-    table_name_str = f"{variable_names[0]} vs {variable_names[1]}"
+    if additional_info != None:
+        table_name_str = f"{additional_info} - {variable_names[0]} vs {variable_names[1]}"
+    else:
+        table_name_str = f"{variable_names[0]} vs {variable_names[1]}"
 
     if type(new_table) == str:
         # create log of table
@@ -156,9 +165,7 @@ def _split_groupby(df, groupby_variable):
     
     # for designated column groupby and save
     for index, group in df.groupby(groupby_variable):
-        df_dict.update({f"df_{index}": group.reset_index(drop=True)})
-
-    print(df_dict)
+        df_dict.update({f"df_{index}": group})
     
     # return the dict of dataframes
     return df_dict
