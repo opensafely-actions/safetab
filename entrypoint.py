@@ -1,6 +1,5 @@
 
 import argparse
-import sys
 
 from safetab.create_tables import output_tables
 
@@ -17,7 +16,8 @@ full_test_json_dict = {"simple_2_way_tabs":
                              "groupby": "sex"}
                        }
 
-def make_tables():
+def make_tables(yaml_str):
+    print(yaml_str)
     output_tables(data_csv="tests/test_data/test_data.csv",
                          table_config=full_test_json_dict,
                          output_dir="tests/test_table_outputs")
@@ -39,14 +39,16 @@ def main():
         "safetab",
         help="add some help here"
     )
-    
+    parser_make_tabs.add_argument("--config", type=str, help="The yaml str passed in")
     parser_make_tabs.set_defaults(function=make_tables)
 
     # parse args
     args = parser.parse_args()
+    
     kwargs = vars(args)
     function = kwargs.pop("function")
-    success = function(**kwargs)
+    yaml_str = kwargs.pop("config")
+    success = function(yaml_str)
 
 if __name__ == "__main__":
     main()
