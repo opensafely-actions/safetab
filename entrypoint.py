@@ -1,25 +1,13 @@
 
 import argparse
+import json
 
 from safetab.create_tables import output_tables
 
-full_test_json_dict = {"simple_2_way_tabs":
-                           {"tab_type": "2-way",
-                            "variables":["sex","ageband","copd"]},
-                       "death_2_way_tabs":
-                           {"tab_type": "target-2-way",
-                            "variables": ["sex", "ageband", "copd"],
-                            "target": "death"},
-                       "grouped_by_sex":
-                            {"tab_type": "groupby-2-way",
-                             "variables":["ageband","copd","death"],
-                             "groupby": "sex"}
-                       }
 
-def make_tables(yaml_str):
-    print(yaml_str)
-    output_tables(data_csv="tests/test_data/test_data.csv",
-                         table_config=full_test_json_dict,
+def make_tables(input_files, table_config):
+    output_tables(data_csv=input_files[0],
+                         table_config=table_config,
                          output_dir="tests/test_table_outputs")
 
 
@@ -30,16 +18,20 @@ def main():
     # version
     parser.add_argument("--version", action='version', version="safetab 0.0.1")
     
-    parser.add_argument("--config", type=str, help="The yaml str passed in")
+    # configurations
+    parser.add_argument("config", type=str, help="The yaml passed in as a json obj")
 
     # parse args
     args = parser.parse_args()
     
     kwargs = vars(args)
     yaml_str = kwargs.pop("config")
+    
+    # TODO: Make sure file exists
+    with open(yaml_str) as json_file:
+        instructions = json.load(json_file)
 
-    # check the files exists
-    make_tables(yaml_str)
+    make_tables(input_files=instructions['inputs'], table_config=instructions['config'])
     
 
 if __name__ == "__main__":

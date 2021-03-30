@@ -40,7 +40,6 @@ def process_table_request(df, variables, small_no_limit=5):
     """
     # Make crosstab table
     table = pd.crosstab(df[variables[0]], df[variables[1]])
-    print(table)
     table_variables = [variables[0], variables[1]]
 
     # Check if redaction needed
