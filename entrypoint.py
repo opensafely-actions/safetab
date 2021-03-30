@@ -1,14 +1,18 @@
 
 import argparse
 import json
+import os
 
 from safetab.create_tables import output_tables
 
 
 def make_tables(input_files, table_config):
-    output_tables(data_csv=input_files[0],
-                         table_config=table_config,
-                         output_dir="tests/test_table_outputs")
+    
+    for input_file in input_files:
+        output_file_name = os.path.splitext(input_file)[0]
+        output_tables(data_csv=input_file,
+                      table_config=table_config,
+                      output_dir=f"{output_file_name}_tables")
 
 
 def main():
@@ -30,7 +34,8 @@ def main():
     # TODO: Make sure file exists
     with open(yaml_str) as json_file:
         instructions = json.load(json_file)
-
+        
+    # pass the data from the json file to the output_tables arguments
     make_tables(input_files=instructions['inputs'], table_config=instructions['config'])
     
 

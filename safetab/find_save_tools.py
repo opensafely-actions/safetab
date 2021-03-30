@@ -33,6 +33,7 @@ def make_folders(table_config_json, path=None):
         for folder_name, table_dets in folder_names.items():
             os.mkdir(folder_name)
     else:
+        os.mkdir(path)
         for folder_name, table_dets in folder_names.items():
             full_path = os.path.join(path, folder_name)
             os.mkdir(full_path)
