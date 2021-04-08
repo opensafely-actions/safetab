@@ -25,9 +25,7 @@ def make_tables(input_files, table_config):
                 - 2-way-simple/
                 - group-by-copd
                 - table-log.txt
-                
     """
-    
     for input_file in input_files:
         output_file_name = os.path.splitext(input_file)[0]
         output_tables(data_csv=input_file,
