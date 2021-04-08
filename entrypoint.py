@@ -29,10 +29,10 @@ def main():
     args = parser.parse_args()
     
     kwargs = vars(args)
-    yaml_str = kwargs.pop("config")
+    json_path = kwargs.pop("config")
     
     # TODO: Make sure file exists
-    with open(yaml_str) as json_file:
+    with open(json_path) as json_file:
         instructions = json.load(json_file)
         
     # pass the data from the json file to the output_tables arguments
