@@ -1,0 +1,45 @@
+{
+  "inputs": [
+    "tests/test_data/test_data_2.csv"
+  ],
+  "config": {
+    "simple_2_way_tabs": {
+      "tab_type": "2-way",
+      "variables": [
+        "sex",
+        "bmi",
+        "imd"
+      ]
+    },
+    "sex_2_way_tab": {
+      "tab_type": "target-2-way",
+      "variables": [
+        "bmi",
+        "ageband",
+        "ethnicity",
+        "imd"
+      ],
+      "target": "sex"
+    },
+    "imd_2_way_tab": {
+      "tab_type": "target-2-way",
+      "variables": [
+        "bmi",
+        "ageband",
+        "ethnicity",
+        "sex"
+      ],
+      "target": "imd"
+    },
+    "grouped_by_imd": {
+      "tab_type": "groupby-2-way",
+      "variables": [
+        "ageband",
+        "current_copd",
+        "dialysis",
+        "dementia"
+      ],
+      "groupby": "imd"
+    }
+  }
+}

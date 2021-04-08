@@ -19,14 +19,33 @@ def prettify_tables(table, variables):
             3 tables.
     """
     table2 = table.copy()
+    
+    # make a new table with the values being changed to column percentages rather than values
     percent_col = table2.apply(lambda r: round(((r / r.sum()) * 100), 1), axis=0)
-    table2.insert(loc=1, column="Column1 %", value=percent_col[0])
-    table2.insert(loc=3, column="Column2 %", value=percent_col[1])
+
+    start_counter = 1
+    column_counter = 1
+    no_of_columns = len(table2.columns)
+    # iterate through all the columns of the table and insert the corresponding column from the
+    # table of column percents
+    for x in range(0, no_of_columns):
+        table2.insert(loc=start_counter, column=f"Column{column_counter} %", value=percent_col.iloc[:,column_counter-1])
+        start_counter = start_counter + 2
+        column_counter = column_counter + 1
 
     table3 = table.copy()
+    # make a new table with the values being changed to column percentages rather than values
     percent_row = table3.apply(lambda r: round(((r / r.sum()) * 100), 1), axis=1)
-    table3.insert(loc=1, column="Row1 %", value=percent_row[0])
-    table3.insert(loc=3, column="Row2 %", value=percent_row[1])
+    
+    start_counter = 1
+    column_counter = 1
+    no_of_columns = len(table3.columns)
+    # iterate through all the columns of the table and insert the corresponding column from the
+    # table of row percents
+    for x in range(0, no_of_columns):
+        table3.insert(loc=start_counter, column=f"Row{column_counter} %", value=percent_row.iloc[:,column_counter-1])
+        start_counter = start_counter + 2
+        column_counter = column_counter + 1
 
     table.loc['Total', :] = table.sum(axis=0)
     table.loc[:, 'Total'] = table.sum(axis=1)

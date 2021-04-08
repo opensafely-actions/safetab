@@ -31,8 +31,9 @@ def make_folders(table_config_json, path=None):
     folder_names = table_config_json
     if path is None:
         for folder_name, table_dets in folder_names.items():
-            os.mkdir(folder_name)
+            os.makedirs(folder_name, exist_ok=True)
     else:
+        os.makedirs(path, exist_ok=True)
         for folder_name, table_dets in folder_names.items():
             full_path = os.path.join(path, folder_name)
-            os.mkdir(full_path)
+            os.makedirs(full_path, exist_ok=True)

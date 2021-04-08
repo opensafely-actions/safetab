@@ -133,3 +133,6 @@ dmypy.json
 
 # MacOS
 .DS_Store
+
+# test tables
+tests/test_table_outputs
