@@ -1,6 +1,7 @@
 ''' this contains useful functions for loading and saving data tables'''
 import os
 import pandas as pd
+import pathlib as lib
 
 from .errors import ImportActionError
 
@@ -9,8 +10,14 @@ def import_data(variable_json, data="output/input.csv"):
     """
     Imports data and checks that the variables are present
     """
-    # load the data into a pandas DataFame
-    test_df = pd.read_csv(data)
+    # load the data into a pandas DataFrame depending on ext
+    ext = lib.PurePosixPath(data).suffix
+    if ext == ".csv":
+        test_df = pd.read_csv(data)
+    elif ext == ".dta":
+        test_df = pd.read_stata(data)
+    else:
+        raise ImportActionError("Unsupported filetype attempted to be imported")
 
     # checks that the variables defined in the json are column names in the
     # csv and raises an error if note
