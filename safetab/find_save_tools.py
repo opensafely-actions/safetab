@@ -1,7 +1,7 @@
 ''' this contains useful functions for loading and saving data tables'''
 import os
 import pandas as pd
-import pathlib as lib
+from pathlib import PurePosixPath
 
 from .errors import ImportActionError
 
@@ -10,14 +10,18 @@ def import_data(variable_json, data="output/input.csv"):
     """
     Imports data and checks that the variables are present
     
-    Will accept input file as csv or dta file (stata). 
+    Will accept input file as csv or dta file (stata).
     """
     # load the data into a pandas DataFrame depending on ext
-    ext = lib.PurePosixPath(data).suffix
+    ext = PurePosixPath(data).suffix
     if ext == ".csv":
         test_df = pd.read_csv(data)
+    elif ext == ".csv.gz":
+        test_df = pd.read_csv(data, compression="gzip")
     elif ext == ".dta":
         test_df = pd.read_stata(data)
+    elif ext == ".feather":
+        test_df = pd.read_feather(data)
     else:
         raise ImportActionError("Unsupported filetype attempted to be imported")
 
