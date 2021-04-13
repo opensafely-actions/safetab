@@ -9,6 +9,8 @@ from .errors import ImportActionError
 def import_data(variable_json, data="output/input.csv"):
     """
     Imports data and checks that the variables are present
+    
+    Will accept input file as csv or dta file (stata). 
     """
     # load the data into a pandas DataFrame depending on ext
     ext = lib.PurePosixPath(data).suffix
