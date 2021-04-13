@@ -16,7 +16,7 @@ def import_data(variable_json, data="output/input.csv"):
     ext = PurePosixPath(data).suffix
     if ext == ".csv":
         test_df = pd.read_csv(data)
-    elif ext == ".csv.gz":
+    elif ext == ".gz":
         test_df = pd.read_csv(data, compression="gzip")
     elif ext == ".dta":
         test_df = pd.read_stata(data)
