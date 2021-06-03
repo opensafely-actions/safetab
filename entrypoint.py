@@ -3,8 +3,8 @@ import json
 import os
 from pathlib import Path
 
-from utils_entrypoint import load_config
 from safetab.create_tables import output_tables
+from utils_entrypoint import load_config
 from version import __version__
 
 
@@ -74,7 +74,7 @@ def make_tables(input_files, config):
             data_csv=input_file,
             table_config=processed_config["tables"],
             output_dir=f"{processed_config['output_path']}/{input_filename}_tables",
-            limit=processed_config["redaction_limit"]
+            limit=processed_config["redaction_limit"],
         )
 
 

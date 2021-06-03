@@ -1,10 +1,13 @@
 import itertools
+from typing import Dict, Optional, Union
+
+import pandas as pd
 
 from .find_save_tools import import_data, make_folders
 from .redaction_tools import process_table_request
 
 
-def prettify_tables(table, variables):
+def prettify_tables(table: pd.DataFrame, variables: list) -> str:
     """
     This takes in a table that has been okayed for redaction and produced 2 nice
     version of the table, 1 with row percentages, and 1 with column percentages. These
@@ -79,7 +82,12 @@ def prettify_tables(table, variables):
     return output_str
 
 
-def output_tables(data_csv, table_config, output_dir=None, limit=5):
+def output_tables(
+    data_csv: str,
+    table_config: Dict,
+    output_dir: Union[None, str] = None,
+    limit: int = 5,
+) -> None:
     """
     Takes the list of requests for various table configurations, and processes them
     by calling process_table_request() on each request. Each group of tables are
@@ -107,9 +115,9 @@ def output_tables(data_csv, table_config, output_dir=None, limit=5):
     make_folders(table_config_json=table_config, path=output_dir)
 
     # Sort the json into options
-    two_way_tables = {}
-    targeted_two_way_tables = {}
-    groupby_two_way_tables = {}
+    two_way_tables: Dict = {}
+    targeted_two_way_tables: Dict = {}
+    groupby_two_way_tables: Dict = {}
 
     for name_tables, instructions in table_config.items():
         if instructions["tab_type"] == "2-way":
@@ -159,16 +167,21 @@ def output_tables(data_csv, table_config, output_dir=None, limit=5):
                 _output_simple_two_way(
                     dataset,
                     folder_names,
-                    list(combination),
+                    combination,
                     output_dir=output_dir,
                     additional_info=dataset_name,
-                    limit=limit
+                    limit=limit,
                 )
 
 
 def _output_simple_two_way(
-    df, name_tables, table_instructions, output_dir=None, limit=5, additional_info=None
-):
+    df: pd.DataFrame,
+    name_tables: str,
+    table_instructions: Dict,
+    output_dir: Union[None, str] = None,
+    limit: int = 5,
+    additional_info: Optional[str] = None,
+) -> None:
     """
     This function generated simple 2 way tables given some inputs.
 
@@ -186,7 +199,9 @@ def _output_simple_two_way(
             tables that look similar to each other for example copd vs death,
             in both sexes.
     """
-    variable_names, new_table = process_table_request(df, table_instructions, small_no_limit=limit)
+    variable_names, new_table = process_table_request(
+        df, table_instructions, small_no_limit=limit
+    )
     if additional_info is not None:
         table_name_str = (
             f"{additional_info} - {variable_names[0]} vs {variable_names[1]}"
@@ -217,7 +232,7 @@ def _output_simple_two_way(
             file_write.write(pretty_new_table)
 
 
-def _split_groupby(df, groupby_variable):
+def _split_groupby(df: pd.DataFrame, groupby_variable: str) -> Dict[str, pd.DataFrame]:
 
     # empty dict that collects the grouped dataframes
     df_dict = {}
