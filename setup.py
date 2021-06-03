@@ -15,7 +15,7 @@ setup(
     author="OpenSAFELY",
     author_email="tech@opensafely.org",
     python_requires=">=3.7",
-    install_requires=["pandas", "pyarrow"],
+    install_requires=["pandas", "pyarrow", "tabulate"],
     entry_points={"console_scripts": ["safetab=entrypoint:main"]},
     classifiers=["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"],
 )
