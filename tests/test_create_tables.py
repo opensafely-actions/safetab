@@ -1,4 +1,4 @@
-from safetab.create_tables import prettify_tables, output_tables
+from safetab.create_tables import output_tables, prettify_tables
 from safetab.find_save_tools import import_data
 from safetab.redaction_tools import process_table_request
 

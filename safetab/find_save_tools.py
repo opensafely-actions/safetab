@@ -1,7 +1,8 @@
 """ this contains useful functions for loading and saving data tables"""
 import os
-import pandas as pd
 from pathlib import PurePosixPath
+
+import pandas as pd
 
 from .errors import ImportActionError
 
@@ -28,7 +29,7 @@ def import_data(variable_json, data="output/input.csv"):
     # checks that the variables defined in the json are column names in the
     # csv and raises an error if note
     for table_names, instructions in variable_json.items():
-        if not set(instructions['variables']).issubset(df.columns.values):
+        if not set(instructions["variables"]).issubset(df.columns.values):
             raise ImportActionError
 
     # returns the csv

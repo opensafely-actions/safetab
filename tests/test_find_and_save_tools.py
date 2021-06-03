@@ -3,7 +3,6 @@ import pytest
 from safetab.errors import ImportActionError
 from safetab.find_save_tools import import_data
 
-
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
 correct_json_dict = {

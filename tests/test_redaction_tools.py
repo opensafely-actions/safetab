@@ -1,7 +1,8 @@
 import pandas as pd
-from safetab.redaction_tools import check_for_low_numbers, process_table_request
-from safetab.find_save_tools import import_data
 
+from safetab.find_save_tools import import_data
+from safetab.redaction_tools import (check_for_low_numbers,
+                                     process_table_request)
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 

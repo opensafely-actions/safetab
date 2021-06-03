@@ -1,7 +1,7 @@
 import itertools
 
-from .redaction_tools import process_table_request
 from .find_save_tools import import_data, make_folders
+from .redaction_tools import process_table_request
 
 
 def prettify_tables(table, variables):
