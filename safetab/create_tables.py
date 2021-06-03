@@ -108,6 +108,7 @@ def output_tables(data_csv, table_config, output_dir=None):
     two_way_tables = {}
     targeted_two_way_tables = {}
     groupby_two_way_tables = {}
+
     for name_tables, instructions in table_config.items():
         if instructions["tab_type"] == "2-way":
             two_way_tables[name_tables] = list(

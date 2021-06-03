@@ -15,25 +15,24 @@ def import_data(variable_json, data="output/input.csv"):
     # load the data into a pandas DataFrame depending on ext
     ext = PurePosixPath(data).suffix
     if ext == ".csv":
-        test_df = pd.read_csv(data)
+        df = pd.read_csv(data)
     elif ext == ".gz":
-        test_df = pd.read_csv(data, compression="gzip")
+        df = pd.read_csv(data, compression="gzip")
     elif ext == ".dta":
-        test_df = pd.read_stata(data)
+        df = pd.read_stata(data)
     elif ext == ".feather":
-        test_df = pd.read_feather(data)
+        df = pd.read_feather(data)
     else:
         raise ImportActionError("Unsupported filetype attempted to be imported")
 
     # checks that the variables defined in the json are column names in the
     # csv and raises an error if note
-    for name_table, instructions in variable_json.items():
-        for var_item in instructions["variables"]:
-            if var_item not in test_df.columns.values:
-                raise ImportActionError
+    for table_names, instructions in variable_json.items():
+        if not set(instructions['variables']).issubset(df.columns.values):
+            raise ImportActionError
 
     # returns the csv
-    return test_df
+    return df
 
 
 def make_folders(table_config_json, path=None):
