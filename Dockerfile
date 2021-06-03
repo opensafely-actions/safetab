@@ -1,7 +1,7 @@
 # Grab the docker python image
 FROM ghcr.io/opensafely-core/python:latest as base-python
 
-# Upgrade pip and cohort report
+# Upgrade pip and safetab
 RUN python -m pip install -U pip setuptools wheel && \
     python -m pip install safetab-action
 
