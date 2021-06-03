@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 
+from utils_entrypoint import load_config
 from safetab.create_tables import output_tables
 from version import __version__
 
@@ -64,13 +65,16 @@ def make_tables(input_files, config):
                 - group-by-copd
                 - table-log.txt
     """
+    processed_config = load_config(config)
+
     for input_file in input_files:
         input_filename_with_ext = os.path.basename(input_file)
         input_filename = os.path.splitext(input_filename_with_ext)[0]
         output_tables(
             data_csv=input_file,
-            table_config=config["tables"],
-            output_dir=f"{config['output_path']}/{input_filename}_tables",
+            table_config=processed_config["tables"],
+            output_dir=f"{processed_config['output_path']}/{input_filename}_tables",
+            limit=processed_config["redaction_limit"]
         )
 
 

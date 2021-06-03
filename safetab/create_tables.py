@@ -79,7 +79,7 @@ def prettify_tables(table, variables):
     return output_str
 
 
-def output_tables(data_csv, table_config, output_dir=None):
+def output_tables(data_csv, table_config, output_dir=None, limit=5):
     """
     Takes the list of requests for various table configurations, and processes them
     by calling process_table_request() on each request. Each group of tables are
@@ -97,6 +97,8 @@ def output_tables(data_csv, table_config, output_dir=None):
         output_dir (str): path to a directory to save all the tables.
             Default is None. If none provided will save tables in the root where
             function is called.
+        limit (int): limit at which should redact small numbers
+
     """
     # Load data by calling import_data() function
     df = import_data(data=data_csv, variable_json=table_config)
@@ -137,7 +139,7 @@ def output_tables(data_csv, table_config, output_dir=None):
         # run through create each table and log if table made
         for table_instructions in two_way_tables[name_tables]:
             _output_simple_two_way(
-                df, name_tables, table_instructions, output_dir=output_dir
+                df, name_tables, table_instructions, output_dir=output_dir, limit=limit
             )
 
     # run through all the targeted 2 way tables
@@ -146,7 +148,7 @@ def output_tables(data_csv, table_config, output_dir=None):
         # run through create each table and log if table made
         for table_instructions in targeted_two_way_tables[name_tables]:
             _output_simple_two_way(
-                df, name_tables, table_instructions, output_dir=output_dir
+                df, name_tables, table_instructions, output_dir=output_dir, limit=limit
             )
 
     # run through all the grouped 2 way tables
@@ -160,11 +162,12 @@ def output_tables(data_csv, table_config, output_dir=None):
                     list(combination),
                     output_dir=output_dir,
                     additional_info=dataset_name,
+                    limit=limit
                 )
 
 
 def _output_simple_two_way(
-    df, name_tables, table_instructions, output_dir=None, additional_info=None
+    df, name_tables, table_instructions, output_dir=None, limit=5, additional_info=None
 ):
     """
     This function generated simple 2 way tables given some inputs.
@@ -178,11 +181,12 @@ def _output_simple_two_way(
             that is imported in as a Python dict, and contains the instructions
             for the type of table to be generated
         output (str or None): this the sub folder that these tables should be saved in.
+        limit (int): limit at which small numbers should be redacted
         additional_info (str or None): this additional argument for labelling
             tables that look similar to each other for example copd vs death,
             in both sexes.
     """
-    variable_names, new_table = process_table_request(df, table_instructions)
+    variable_names, new_table = process_table_request(df, table_instructions, small_no_limit=limit)
     if additional_info is not None:
         table_name_str = (
             f"{additional_info} - {variable_names[0]} vs {variable_names[1]}"

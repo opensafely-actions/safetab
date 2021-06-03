@@ -26,5 +26,6 @@
       "groupby": "sex"
     }
   },
-  "output_path": "safetab_outputs"
+  "output_path": "safetab_outputs",
+  "redaction_limit": 5
 }
