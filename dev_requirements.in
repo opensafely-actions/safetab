@@ -1,5 +1,6 @@
 # main functionality
 pandas
+tabulate
 pyarrow
 
 # dev tools
