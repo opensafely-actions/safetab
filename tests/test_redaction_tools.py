@@ -3,7 +3,7 @@ from safetab.redaction_tools import check_for_low_numbers, process_table_request
 from safetab.find_save_tools import import_data
 
 
-TEST_DATA_CSV = "test_data/test_data.csv"
+TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
 correct_json_dict = {"simple_2_way_tabs":
                            {"tab_type": "2-way",

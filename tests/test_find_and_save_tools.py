@@ -4,7 +4,7 @@ from safetab.errors import ImportActionError
 from safetab.find_save_tools import import_data
 
 
-TEST_DATA_CSV = "test_data/test_data.csv"
+TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
 correct_json_dict = {"simple_2_way_tabs":
                            {"tab_type": "2-way",
@@ -26,4 +26,4 @@ def test_import_data():
 
     # Checks if raises an error if json does not match the csv columns.
     with pytest.raises(ImportActionError):
-        test2 = import_data(bad_json_dict, data="test_data/test_data.csv")
+        test2 = import_data(bad_json_dict, data=TEST_DATA_CSV)
