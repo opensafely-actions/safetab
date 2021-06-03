@@ -10,7 +10,7 @@ setup(
     url="https://github.com/opensafely-core/safetab-action",
     description="Command line tool for redaction of small numbers",
     long_description="Command line tool for redaction of small numbers in "
-                     "descriptive or contingency tables.",
+    "descriptive or contingency tables.",
     license="GPLv3",
     author="OpenSAFELY",
     author_email="tech@opensafely.org",

@@ -6,24 +6,37 @@ from safetab.find_save_tools import import_data
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
-correct_json_dict = {"simple_2_way_tabs":
-                           {"tab_type": "2-way",
-                            "variables":["sex","ageband","copd","death"]}}
+correct_json_dict = {
+    "simple_2_way_tabs": {
+        "tab_type": "2-way",
+        "variables": ["sex", "ageband", "copd", "death"],
+    }
+}
 
-bad_json_dict = {"simple_2_way_tabs":
-                           {"tab_type": "2-way",
-                            "variables":["sex","test","copd","death"]}}
+bad_json_dict = {
+    "simple_2_way_tabs": {
+        "tab_type": "2-way",
+        "variables": ["sex", "test", "copd", "death"],
+    }
+}
+
 
 def test_import_data():
     # Import test data
     test = import_data(correct_json_dict, data=TEST_DATA_CSV)
 
     # Check expected 60 rows in dataframe of test data
-    assert(len(test.index) == 60)
+    assert len(test.index) == 60
 
     # Check column names match
-    assert(list(test.columns.values) == ['patient_id','sex', "ageband", "copd", "death"])
+    assert list(test.columns.values) == [
+        "patient_id",
+        "sex",
+        "ageband",
+        "copd",
+        "death",
+    ]
 
     # Checks if raises an error if json does not match the csv columns.
     with pytest.raises(ImportActionError):
-        test2 = import_data(bad_json_dict, data=TEST_DATA_CSV)
+        import_data(bad_json_dict, data=TEST_DATA_CSV)
