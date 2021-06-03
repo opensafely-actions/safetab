@@ -1,10 +1,10 @@
-
 from setuptools import find_namespace_packages, setup
 
+from version import __version__
 
 setup(
     name="safetab",
-    version="0.0.1",
+    version=__version__,
     packages=find_namespace_packages(exclude=["tests"]),
     include_package_data=True,
     url="https://github.com/opensafely-core/safetab-action",
@@ -15,6 +15,7 @@ setup(
     author="OpenSAFELY",
     author_email="tech@opensafely.org",
     python_requires=">=3.7",
-    entry_points={"console_scripts": ["safetab=safetab:main"]},
+    install_requires=["pandas", "pyarrow"],
+    entry_points={"console_scripts": ["safetab=entrypoint:main"]},
     classifiers=["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"],
 )
