@@ -5,8 +5,12 @@ FROM ghcr.io/opensafely-core/python:latest as base-python
 RUN python -m pip install -U pip setuptools wheel && \
     python -m pip install safetab-action
 
-# point to right file
-CMD python entrypoint.py
+# labeling
+LABEL org.opencontainers.image.title="safetab" \
+      org.opencontainers.image.description="Safetab action for opensafely.org" \
+      org.opencontainers.image.source="https://github.com/opensafely-core/safetab-action" \
+      org.opensafely.action="safetab"
 
-# define entry point
-ENTRYPOINT ["safetab"]
+# re-use entrypoint from base-docker image
+ENV ACTION_EXEC=safetab
+
