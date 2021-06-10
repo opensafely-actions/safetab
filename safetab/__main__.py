@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 
 from safetab.create_tables import output_tables
-from utils_entrypoint import load_config
-from version import __version__
+from safetab.utils import load_config
+from safetab.version import __version__
 
 
 class ActionConfig:

@@ -1,6 +1,6 @@
 from setuptools import find_namespace_packages, setup
 
-from version import __version__
+from safetab.version import __version__
 
 setup(
     name="safetab",
@@ -16,6 +16,6 @@ setup(
     author_email="tech@opensafely.org",
     python_requires=">=3.7",
     install_requires=["pandas", "pyarrow", "tabulate"],
-    entry_points={"console_scripts": ["safetab=entrypoint:main"]},
+    entry_points={"console_scripts": ["safetab=safetab.__main__:main"]},
     classifiers=["License :: OSI Approved :: GNU General Public License v3 (GPLv3)"],
 )
