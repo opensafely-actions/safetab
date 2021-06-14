@@ -1,8 +1,4 @@
-{
-  "inputs": [
-    "tests/test_data/test_data.csv"
-  ],
-  "config": {
+{"tables": {
     "simple_2_way_tabs": {
       "tab_type": "2-way",
       "variables": [
@@ -29,5 +25,7 @@
       ],
       "groupby": "sex"
     }
-  }
+  },
+  "output_path": "safetab_outputs",
+  "redaction_limit": 5
 }

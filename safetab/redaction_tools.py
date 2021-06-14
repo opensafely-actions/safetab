@@ -1,10 +1,12 @@
-""" Toools for redaction """
+""" Tools for redaction """
+from typing import Dict
+
 import pandas as pd
 
 
-def check_for_low_numbers(table, small_no_limit=5):
+def check_for_low_numbers(table: pd.DataFrame, small_no_limit: int = 5) -> bool:
     """
-    Takes in a dataframe such as 2x2 contigency table and checks each value
+    Takes in a dataframe such as 2x2 contingency table and checks each value
     to see if any cell values are small numbers.
 
     Args:
@@ -32,7 +34,7 @@ def check_for_low_numbers(table, small_no_limit=5):
     return condition_met
 
 
-def process_table_request(df, variables, small_no_limit=5):
+def process_table_request(df: pd.DataFrame, variables: Dict, small_no_limit: int = 5):
     """
     Take one table request and processes. It creates the table, and if
     cell counts 5 or less in any cell, it redacts the whole table. It keeps
