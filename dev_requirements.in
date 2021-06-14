@@ -1,7 +1,5 @@
 # main functionality
-pandas
-tabulate
-pyarrow
+-e file:.
 
 # dev tools
 black
