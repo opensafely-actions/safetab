@@ -18,8 +18,8 @@ that shows what has been redacted.
 The following example blocks should be included 
 in the `project.yaml` file. 
 
-Example `project.yaml`
-```yaml 
+Example 
+```
 inputs: 
   input: tests/test_data/input.feather
 ```
@@ -48,8 +48,7 @@ If you want to change the limit at which redaction occurs, specify this in the
 `--config` with `redaction_limit`. The default is 5 or below. 
 
 Example
-`project.yaml`
-```yaml
+```
 actions: 
   safetab_data:
     run: safetab:latest input.csv
