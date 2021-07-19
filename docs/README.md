@@ -1,5 +1,3 @@
-# Safetab Action 
-
 ### Action Summary
 This is an action that can be called into the 
 `project.yaml`. It requires data in
@@ -18,7 +16,7 @@ that shows what has been redacted.
 The following example blocks should be included 
 in the `project.yaml` file. 
 
-Example `project.yaml`
+##### Example
 ```yaml 
 inputs: 
   input: tests/test_data/input.feather
@@ -47,8 +45,7 @@ will make this folder if it does not exist.
 If you want to change the limit at which redaction occurs, specify this in the 
 `--config` with `redaction_limit`. The default is 5 or below. 
 
-Example
-`project.yaml`
+##### Example
 ```yaml
 actions: 
   safetab_data:
