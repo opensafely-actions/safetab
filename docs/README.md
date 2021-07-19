@@ -45,7 +45,7 @@ will make this folder if it does not exist.
 If you want to change the limit at which redaction occurs, specify this in the 
 `--config` with `redaction_limit`. The default is 5 or below. 
 
-##### Example
+##### Example 
 ```yaml
 actions: 
   safetab_data:
