@@ -1,6 +1,6 @@
-from safetab.create_tables import output_tables, prettify_tables
-from safetab.find_save_tools import import_data
-from safetab.redaction_tools import process_table_request
+from action.create_tables import output_tables, prettify_tables
+from action.find_save_tools import import_data
+from action.redaction_tools import process_table_request
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
