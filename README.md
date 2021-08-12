@@ -1,77 +1,86 @@
-### Action Summary
-This is an action that can be called into the 
-`project.yaml`. It requires data in
-a support data file  format (`.csv`, `csv.gz`,
-`.dta`, `feather`), and outputs a folder of markdown files. 
-This action takes in a dataset and a configuration and 
-outputs different types of 2 way tables for descriptive
-statistics. 
+# Safetab
 
-Small numbers suppression is applied. A conservative approach
-is adopted where any indiviudal cell that needs to be redacted, 
-results in the whole table being redacted. A log file is created
-that shows what has been redacted. 
+## Summary
 
-### Using Safetab Action 
-The following example blocks should be included 
-in the `project.yaml` file. 
+Safetab outputs two-way tables of descriptive statistics.
 
-##### Example
-```yaml 
-inputs: 
-  input: tests/test_data/input.feather
-```
+It applies conservative small number suppression;
+if a cell is redacted, then the table is also redacted.
+Safetab creates a log file that shows what has been redacted.
 
-The `--config` should contain
-a key called `tables` containing the tables requested. See
-[test1_config](tests/test_json_configs/test_json_1.json). The available tables are:
+## Usage
 
-- `2-way` - simple 2-way table. For example, sex by copd. It creates all combinations
-  of available variables if given a list. For example if provided with age, sex and copd. 
-  It will produce 3 tables - age vs sex, age vs copd, and sex vs copd. 
-- `target-2-way` - 2 way tables by one specified variable. For example if 
-  target variable is death and the other variables provided are sex and copd, 
-  it will produce 2 tables: sex vs death and copd vs death.
-- `groupby-2-way` - simple 2 way table that is stratifed by a third variable. If
-  variable to group by is 2 age groups (under 50, over 50), and the 
-  variables provided are copd and heart disease, it will produce 2 tables: 
-  copd vs heart disease for under 50s, and copd vs heart disease for over 50s.  
+Consider the following extract from a study's *project.yaml*:
 
-If you require the safetab markdown files to be saved 
-in a particular folder, you can specify this in the `--config` with `output_path`. If 
-no output path is provided, the default place is `safetab_tables`. The action 
-will make this folder if it does not exist. 
-
-If you want to change the limit at which redaction occurs, specify this in the 
-`--config` with `redaction_limit`. The default is 5 or below. 
-
-##### Example 
 ```yaml
-actions: 
-  safetab_data:
-    run: safetab:latest input.csv
-config:
-  tables:
-    simple_2_way_tabs:
-      tab_type: 2-way
-      variables:
-      - sex
-      - ageband
-      - copd
-    death_2_way_tab:
-      tab_type: target-2-way
-      variables:
-      - sex
-      - ageband
-      - copd
-      target: death
-    grouped_by_sex:
-      tab_type: groupby-2-way
-      variables:
-      - ageband
-      - copd
-      - death
-      groupby: sex
-  output_path: safetab_outputs
-  redaction_limit: 5
+actions:
+
+  generate_study_population:
+    run: cohortextractor:latest generate_cohort
+    outputs:
+      highly_sensitive:
+        cohort: output/input.csv
+
+  generate_safetabs:
+    run: safetab:v2.0 output/input.csv
+    needs: [generate_study_population]
+    config:
+      output_path: output
+      redaction_limit: 5
+      tables:
+        two_way:
+          tab_type: 2-way
+          variables:
+            - sex
+            - age_band
+    outputs:
+      moderately_sensitive:
+        safetab_log: output/input_tables/table_log.txt
+        safetab_two_way: output/input_tables/two_way/*.md
 ```
+
+The `generate_safetabs` action outputs one table: `sex` vs `age_band`.
+Notice the `run` and `config` properties.
+The `run` property passes a specific input table to a specific version of safetab.
+In this case, the specific input table is *output/input.csv* and the specific version of safetab is v2.0.
+The `config` property passes configuration to safetab; for more information, see *Configuration*.
+
+### Configuration
+
+`output_path`, which defaults to `safetab_tables`.
+Save the outputs to the given path.
+If the given path does not exist, then it is created.
+
+---
+
+`redaction_limit`, which defaults to `5`.
+Cells (and tables) with less than or equal to this number of records are redacted.
+
+---
+
+`tables`
+
+`2-way`: Outputs a two-way table for each pair (combination) of variables.
+For example, given the variables `sex` and `age_band`, it will output one table:
+* `sex` vs `age_band`
+
+Given the variables `sex`, `age_band`, and `has_copd`, it will output three tables:
+* `sex` vs `age_band`
+* `sex` vs `has_copd`
+* `age_band` vs `has_copd`
+
+`target-2-way`: Outputs a two-way table for each pair (combination) of variables for a target variable, which is given by the `target` property.
+For example, given the variables `sex` and `age_band`, and the target variable `has_copd`, it will output two tables:
+
+* `sex` vs `has_copd`
+* `age_band` vs `has_copd`
+
+`groupby-2-way`: Outputs a two-way table for each pair (combination) of variables for a group-by variable, which is given by the `groupby` property.
+For example, given the variables `sex` and `has_copd`, and the group-by variable `age_band`, it will output one table for each unique value of `age_band`:
+* `sex` vs `has_copd` for `16-29`
+* `sex` vs `has_copd` for `30-39`
+* ...
+
+## Developer docs
+
+Please see [DEVELOPERS.md](DEVELOPERS.md).
