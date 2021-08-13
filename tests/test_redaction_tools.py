@@ -1,8 +1,7 @@
 import pandas as pd
 
 from action.find_save_tools import import_data
-from action.redaction_tools import (check_for_low_numbers,
-                                    process_table_request)
+from action.redaction_tools import check_for_low_numbers, process_table_request
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 

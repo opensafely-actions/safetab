@@ -79,7 +79,7 @@ def main():
     # configurations
     parser.add_argument(
         "--config",
-        help="Configuration of the action - either a JSON str, or a path to a JSON file",
+        help="Configuration as either a JSON str or a path to a JSON file",
     )
 
     # version
