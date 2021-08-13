@@ -4,9 +4,13 @@ define USAGE
 Run commands for a project
 
 Commands:
-	format    Runs black and isort over all python files
-	lint      Lint all python files using flake8
-	typehint  Runs mypy over code base with --ignore-missing-imports flag
+	bump		Bumps VERSION and then creates and tags a commit. Must be passed major, minor, or patch as the argument
+	check    	Runs black, isort, and flake8 over all Python files but does not make changes
+	dev_setup  	Sets up development environment
+	fix      	Runs black and isort over all Python files and makes changes
+	test		Runs tests
+	typehint  	Runs mypy over code base with --ignore-missing-imports flag
+	update		Updates environment. Must be passed either dev or prod as the argument
 
 endef
 
@@ -15,20 +19,42 @@ export USAGE
 help:
 	@echo "$$USAGE"
 
-.PHONY: lint
-lint:
-	@echo "Running flake8" && \
-		flake8 \
+.PHONY: bump
+bump:
+	@echo "Bumping VERSION" && \
+		sh scripts/bump $(filter-out $@,$(MAKECMDGOALS)) \
 		|| exit 1
 
-.PHONY: format
-format:
-	@echo "Running black" && \
-		black --check . && \
-		echo "Running isort" && \
-		isort . \
+.PHONY: check
+check:
+	@echo "Checking Python files" && \
+		sh scripts/check \
+		|| exit 1
+
+.PHONY: dev_setup
+dev_setup:
+	@echo "Setting up dev environment" && \
+		sh scripts/dev_setup \
+		|| exit 1
+
+.PHONY: fix
+fix:
+	@echo "Fixing Python files" && \
+		sh scripts/fix \
+		|| exit 1
+
+.PHONY: test
+test:
+	@echo "Runing tests" && \
+		sh scripts/test \
+		|| exit 1
+
+.PHONY: update
+update:
+	@echo "Updating environment" && \
+		sh scripts/update $(filter-out $@,$(MAKECMDGOALS)) \
 		|| exit 1
 
 .PHONY: typehint
 typehint:
-	mypy --ignore-missing-imports --exclude='venv/' ./
+	mypy --ignore-missing-imports --exclude='$(VIRTUAL_ENV)' ./

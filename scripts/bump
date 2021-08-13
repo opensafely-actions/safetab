@@ -1,0 +1,9 @@
+#!/bin/bash
+# Bumps VERSION and then creates and tags a commit
+
+set -euo pipefail
+
+current_version="`cat action/VERSION`"
+version_type="$1"
+
+$VIRTUAL_ENV/bin/bump2version --current-version $current_version --tag $version_type action/VERSION
