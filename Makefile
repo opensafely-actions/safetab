@@ -32,10 +32,3 @@ format:
 .PHONY: typehint
 typehint:
 	mypy --ignore-missing-imports --exclude='venv/' ./
-
-IMAGE_NAME=local-safetab
-build:
-	docker build . -t $(IMAGE_NAME)
-
-test-docker: build
-	docker run --rm -v :/workspace $(IMAGE_NAME) tests/test_data/test_data.csv --config tests/test_json_configs/test_json_1.json
