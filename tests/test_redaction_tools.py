@@ -13,20 +13,14 @@ correct_json_dict = {
 }
 
 
-def test_check_for_low_numbers():
-    no_redact_data = {"test_col_1": [10, 20], "test_col_2": [20, 40]}
-    no_redact_df = pd.DataFrame(data=no_redact_data)
+class TestContainsSmallNumbers:
+    def test_contains_small_numbers(self):
+        table = pd.DataFrame({"test_col_1": [1, 10], "test_col_2": [20, 40]})
+        assert check_for_low_numbers(table)
 
-    # use check_for_low_numbers() on a dataframe that does not require redaction
-    result = check_for_low_numbers(table=no_redact_df, small_no_limit=5)
-    assert result is False
-
-    need_redact_data = {"test_col_1": [1, 10], "test_col_2": [20, 40]}
-    need_redact_df = pd.DataFrame(data=need_redact_data)
-
-    # use check_for_low_numbers() on a dataframe that does require redaction
-    result2 = check_for_low_numbers(table=need_redact_df, small_no_limit=5)
-    assert result2 is True
+    def test_does_not_contain_small_numbers(self):
+        table = pd.DataFrame({"test_col_1": [10, 20], "test_col_2": [20, 40]})
+        assert not check_for_low_numbers(table)
 
 
 def test_process_table_request():
