@@ -29,7 +29,7 @@ def test_prettify_tables():
     no_redaction_needed_variables = ["sex", "copd"]
     test = import_data(correct_json_dict, data=TEST_DATA_CSV)
     variables, test_table = process_table_request(
-        test, variables=no_redaction_needed_variables
+        test, cols=no_redaction_needed_variables
     )
 
     output_str = prettify_tables(table=test_table, variables=variables)

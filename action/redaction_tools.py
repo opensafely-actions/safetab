@@ -9,18 +9,18 @@ def contains_small_numbers(table: pd.DataFrame, threshold: int = 5) -> bool:
     return table.le(threshold).any(axis=None)
 
 
-def process_table_request(df: pd.DataFrame, variables: Dict, small_no_limit: int = 5):
+def process_table_request(table: pd.DataFrame, cols: Dict, threshold: int = 5):
     """
     Take one table request and processes. It creates the table, and if
     cell counts 5 or less in any cell, it redacts the whole table. It keeps
     the title of the table.
     """
     # Make crosstab table
-    table = pd.crosstab(df[variables[0]], df[variables[1]])
-    table_variables = [variables[0], variables[1]]
+    table = pd.crosstab(table[cols[0]], table[cols[1]])
+    table_variables = [cols[0], cols[1]]
 
     # Check if redaction needed
-    redaction_needed = contains_small_numbers(table=table, threshold=small_no_limit)
+    redaction_needed = contains_small_numbers(table=table, threshold=threshold)
 
     # if redacted needed then return redacted table
     if redaction_needed:

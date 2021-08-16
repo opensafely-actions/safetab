@@ -200,7 +200,7 @@ def _output_simple_two_way(
             in both sexes.
     """
     variable_names, new_table = process_table_request(
-        df, table_instructions, small_no_limit=limit
+        df, table_instructions, threshold=limit
     )
     if additional_info is not None:
         table_name_str = (
