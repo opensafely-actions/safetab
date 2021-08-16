@@ -1,4 +1,5 @@
 """ this contains useful functions for loading and saving data tables"""
+import itertools
 import os
 import pathlib
 from typing import Dict, Sequence, Union
@@ -17,24 +18,21 @@ def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
     Will accept input file as csv or dta file (stata).
     """
     if file_path.suffix == ".csv":
-        df = pd.read_csv(file_path)
+        table = pd.read_csv(file_path)
     elif file_path.suffix == ".gz":
-        df = pd.read_csv(file_path, compression="gzip")
+        table = pd.read_csv(file_path, compression="gzip")
     elif file_path.suffix == ".dta":
-        df = pd.read_stata(file_path)
+        table = pd.read_stata(file_path)
     elif file_path.suffix == ".feather":
-        df = pd.read_feather(file_path)
+        table = pd.read_feather(file_path)
     else:
-        raise ImportActionError("Unsupported filetype attempted to be imported")
+        raise ImportActionError(f"'{file_path.suffix}' is not a supported file-type")
 
-    # checks that the variables defined in the json are column names in the
-    # csv and raises an error if note
-    for table_names, instructions in table_configs.items():
-        if not set(instructions["variables"]).issubset(df.columns.values):
-            raise ImportActionError
+    variables = set(itertools.chain(*[x["variables"] for x in table_configs.values()]))
+    if not variables <= set(table.columns):
+        raise ImportActionError("Missing required variables")
 
-    # returns the csv
-    return df
+    return table
 
 
 def make_folders(table_config_json, path=None):
