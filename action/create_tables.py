@@ -1,5 +1,5 @@
 import itertools
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Sequence, Union
 
 import pandas as pd
 
@@ -177,7 +177,7 @@ def output_tables(
 def _output_simple_two_way(
     df: pd.DataFrame,
     name_tables: str,
-    table_instructions: Dict,
+    table_instructions: Sequence,
     output_dir: Union[None, str] = None,
     limit: int = 5,
     additional_info: Optional[str] = None,
