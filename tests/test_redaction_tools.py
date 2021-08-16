@@ -15,11 +15,11 @@ correct_json_dict = {
 
 class TestContainsSmallNumbers:
     def test_contains_small_numbers(self):
-        table = pd.DataFrame({"test_col_1": [1, 10], "test_col_2": [20, 40]})
+        table = pd.DataFrame({"col_1": [5, 6], "col_2": [6, 6]})
         assert check_for_low_numbers(table)
 
     def test_does_not_contain_small_numbers(self):
-        table = pd.DataFrame({"test_col_1": [10, 20], "test_col_2": [20, 40]})
+        table = pd.DataFrame({"col_1": [6, 6], "col_2": [6, 6]})
         assert not check_for_low_numbers(table)
 
 
