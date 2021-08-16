@@ -3,7 +3,7 @@ import itertools
 import pandas as pd
 from pandas import testing
 
-from action.redaction_tools import contains_small_numbers, process_table_request
+from action.redaction_tools import contains_small_numbers, make_crosstab
 
 
 class TestContainsSmallNumbers:
@@ -28,7 +28,7 @@ class TestMakeCrosstab:
         table = self.table_factory(5)
         cols = list(table.columns)
 
-        obs_cols, obs_table = process_table_request(table, cols)
+        obs_cols, obs_table = make_crosstab(table, cols)
         exp_cols, exp_table = cols, "REDACTED"
 
         assert obs_cols == exp_cols
@@ -38,7 +38,7 @@ class TestMakeCrosstab:
         table = self.table_factory(6)
         cols = list(table.columns)
 
-        obs_cols, obs_table = process_table_request(table, cols)
+        obs_cols, obs_table = make_crosstab(table, cols)
         exp_cols = cols
         exp_table = pd.DataFrame(
             [[6, 6], [6, 6]],

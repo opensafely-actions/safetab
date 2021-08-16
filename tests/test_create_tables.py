@@ -1,6 +1,6 @@
 from action.create_tables import output_tables, prettify_tables
 from action.find_save_tools import import_data
-from action.redaction_tools import process_table_request
+from action.redaction_tools import make_crosstab
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
@@ -28,9 +28,7 @@ def test_prettify_tables():
     # set up table
     no_redaction_needed_variables = ["sex", "copd"]
     test = import_data(correct_json_dict, data=TEST_DATA_CSV)
-    variables, test_table = process_table_request(
-        test, cols=no_redaction_needed_variables
-    )
+    variables, test_table = make_crosstab(test, cols=no_redaction_needed_variables)
 
     output_str = prettify_tables(table=test_table, variables=variables)
     assert isinstance(output_str, str)

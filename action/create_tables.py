@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence, Union
 import pandas as pd
 
 from .find_save_tools import import_data, make_folders
-from .redaction_tools import process_table_request
+from .redaction_tools import make_crosstab
 
 
 def prettify_tables(table: pd.DataFrame, variables: list) -> str:
@@ -90,7 +90,7 @@ def output_tables(
 ) -> None:
     """
     Takes the list of requests for various table configurations, and processes them
-    by calling process_table_request() on each request. Each group of tables are
+    by calling make_crosstab() on each request. Each group of tables are
     put into folders by that name.
 
     The redacted tables are logged as redacted.
@@ -199,9 +199,7 @@ def _output_simple_two_way(
             tables that look similar to each other for example copd vs death,
             in both sexes.
     """
-    variable_names, new_table = process_table_request(
-        df, table_instructions, threshold=limit
-    )
+    variable_names, new_table = make_crosstab(df, table_instructions, threshold=limit)
     if additional_info is not None:
         table_name_str = (
             f"{additional_info} - {variable_names[0]} vs {variable_names[1]}"
