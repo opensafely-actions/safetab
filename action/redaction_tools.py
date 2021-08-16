@@ -4,7 +4,7 @@ from typing import Dict
 import pandas as pd
 
 
-def check_for_low_numbers(table: pd.DataFrame, threshold: int = 5) -> bool:
+def contains_small_numbers(table: pd.DataFrame, threshold: int = 5) -> bool:
     """Does `table` contain numbers less than or equal to `threshold`?"""
     # Convert table into list for iteration
     all_values = table.values.tolist()
@@ -34,7 +34,7 @@ def process_table_request(df: pd.DataFrame, variables: Dict, small_no_limit: int
     table_variables = [variables[0], variables[1]]
 
     # Check if redaction needed
-    redaction_needed = check_for_low_numbers(table=table, threshold=small_no_limit)
+    redaction_needed = contains_small_numbers(table=table, threshold=small_no_limit)
 
     # if redacted needed then return redacted table
     if redaction_needed:

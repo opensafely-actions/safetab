@@ -1,7 +1,7 @@
 import pandas as pd
 
 from action.find_save_tools import import_data
-from action.redaction_tools import check_for_low_numbers, process_table_request
+from action.redaction_tools import contains_small_numbers, process_table_request
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
 
@@ -16,11 +16,11 @@ correct_json_dict = {
 class TestContainsSmallNumbers:
     def test_contains_small_numbers(self):
         table = pd.DataFrame({"col_1": [5, 6], "col_2": [6, 6]})
-        assert check_for_low_numbers(table)
+        assert contains_small_numbers(table)
 
     def test_does_not_contain_small_numbers(self):
         table = pd.DataFrame({"col_1": [6, 6], "col_2": [6, 6]})
-        assert not check_for_low_numbers(table)
+        assert not contains_small_numbers(table)
 
 
 def test_process_table_request():
