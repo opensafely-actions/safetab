@@ -12,11 +12,7 @@ TableConfig = Dict[str, Union[str, Sequence[str]]]
 
 
 def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
-    """
-    Imports data and checks that the variables are present
-
-    Will accept input file as csv or dta file (stata).
-    """
+    """Imports data, checking that the required variables are present."""
     if file_path.suffix == ".csv":
         table = pd.read_csv(file_path)
     elif file_path.suffix == ".gz":
