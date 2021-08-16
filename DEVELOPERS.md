@@ -1,39 +1,39 @@
+# Development
 
-## Local Development
+## Setting up
 
-For local (non-Docker) development, first install [pyenv][] and execute:
+A Python reusable action's dependencies are made available by the Python runtime.
+Consequently, setting up a local development environment involves installing global production dependencies (from [the Python runtime's repo](https://github.com/opensafely-core/python-docker)) as well as local development dependencies (from this repo).
 
-```sh
-pyenv install $(pyenv local)
-```
-
-Then, execute:
+First, create and activate a new Python 3.8 virtual environment:
 
 ```sh
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r dev_requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-## QA
-Run `make` to access Makefile commands. Black, flake8 and mypy are available 
-and have a standard setup. 
-
-## Tests
-
-If you have a local development environment,
-then the following command will write [pytest][]'s output to the terminal:
+Install `pip-tools`:
 
 ```sh
-python -m pytest
+pip install pip-tools
 ```
 
-You can also pass test modules, classes, methods, and functions to pytest:
+Update *requirements.dev.txt*, resolving global production dependencies and local development dependencies:
 
 ```sh
-python -m pytest tests/test_processing.py::test_load_study_cohort
+pip-compile --generate-hashes --output-file=requirements.dev.txt requirements.dev.in
 ```
 
-[pyenv]: https://github.com/pyenv/pyenv
-[pytest]: https://docs.pytest.org/en/stable/
+Finally, synchronise the local development environment:
+
+```sh
+pip-sync requirements.dev.txt
+```
+
+For more information about dependencies and the Python runtime, see <https://docs.opensafely.org/actions-reusable/>.
+
+## Testing
+
+```sh
+make test
+```

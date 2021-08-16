@@ -4,9 +4,9 @@ import os
 from pathlib import Path
 from typing import Dict
 
+from action import __version__
 from action.create_tables import output_tables
 from action.utils import load_config
-from action.version import __version__
 
 
 def convert_config(file_or_string: str) -> Dict:
@@ -79,7 +79,7 @@ def main():
     # configurations
     parser.add_argument(
         "--config",
-        help="Configuration of the action - either a JSON str, or a path to a JSON file",
+        help="Configuration as either a JSON str or a path to a JSON file",
     )
 
     # version
