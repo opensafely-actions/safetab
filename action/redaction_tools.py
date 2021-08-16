@@ -15,17 +15,9 @@ def process_table_request(table: pd.DataFrame, cols: Dict, threshold: int = 5):
     If the crosstab would contain numbers less than or equal to `threshold`, then return
     "REDACTED" instead.
     """
-    # Make crosstab table
-    table = pd.crosstab(table[cols[0]], table[cols[1]])
-    table_variables = [cols[0], cols[1]]
+    crosstab = pd.crosstab(table[cols[0]], table[cols[1]])
 
-    # Check if redaction needed
-    redaction_needed = contains_small_numbers(table=table, threshold=threshold)
+    if contains_small_numbers(table=crosstab, threshold=threshold):
+        return cols, "REDACTED"
 
-    # if redacted needed then return redacted table
-    if redaction_needed:
-        final_table = "REDACTED"
-    else:
-        final_table = table
-
-    return table_variables, final_table
+    return cols, crosstab
