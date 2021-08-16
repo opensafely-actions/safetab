@@ -1,3 +1,5 @@
+import pathlib
+
 from action.create_tables import output_tables, prettify_tables
 from action.find_save_tools import import_data
 from action.redaction_tools import make_crosstab
@@ -27,7 +29,7 @@ def test_prettify_tables():
 
     # set up table
     no_redaction_needed_variables = ["sex", "copd"]
-    test = import_data(correct_json_dict, data=TEST_DATA_CSV)
+    test = import_data(pathlib.Path(TEST_DATA_CSV), correct_json_dict)
     variables, test_table = make_crosstab(test, cols=no_redaction_needed_variables)
 
     output_str = prettify_tables(table=test_table, variables=variables)

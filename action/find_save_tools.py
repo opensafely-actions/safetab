@@ -1,34 +1,35 @@
 """ this contains useful functions for loading and saving data tables"""
 import os
-from pathlib import PurePosixPath
+import pathlib
+from typing import Dict, Sequence, Union
 
 import pandas as pd
 
 from .errors import ImportActionError
 
+TableConfig = Dict[str, Union[str, Sequence[str]]]
 
-def import_data(variable_json, data="output/input.csv"):
+
+def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
     """
     Imports data and checks that the variables are present
 
     Will accept input file as csv or dta file (stata).
     """
-    # load the data into a pandas DataFrame depending on ext
-    ext = PurePosixPath(data).suffix
-    if ext == ".csv":
-        df = pd.read_csv(data)
-    elif ext == ".gz":
-        df = pd.read_csv(data, compression="gzip")
-    elif ext == ".dta":
-        df = pd.read_stata(data)
-    elif ext == ".feather":
-        df = pd.read_feather(data)
+    if file_path.suffix == ".csv":
+        df = pd.read_csv(file_path)
+    elif file_path.suffix == ".gz":
+        df = pd.read_csv(file_path, compression="gzip")
+    elif file_path.suffix == ".dta":
+        df = pd.read_stata(file_path)
+    elif file_path.suffix == ".feather":
+        df = pd.read_feather(file_path)
     else:
         raise ImportActionError("Unsupported filetype attempted to be imported")
 
     # checks that the variables defined in the json are column names in the
     # csv and raises an error if note
-    for table_names, instructions in variable_json.items():
+    for table_names, instructions in table_configs.items():
         if not set(instructions["variables"]).issubset(df.columns.values):
             raise ImportActionError
 

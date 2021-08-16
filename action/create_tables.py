@@ -1,4 +1,5 @@
 import itertools
+import pathlib
 from typing import Dict, Optional, Sequence, Union
 
 import pandas as pd
@@ -108,8 +109,7 @@ def output_tables(
         limit (int): limit at which should redact small numbers
 
     """
-    # Load data by calling import_data() function
-    df = import_data(data=data_csv, variable_json=table_config)
+    df = import_data(pathlib.Path(data_csv), table_config)
 
     # Make folder for tables
     make_folders(table_config_json=table_config, path=output_dir)
