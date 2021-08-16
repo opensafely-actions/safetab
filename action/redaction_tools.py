@@ -10,10 +10,10 @@ def contains_small_numbers(table: pd.DataFrame, threshold: int = 5) -> bool:
 
 
 def process_table_request(table: pd.DataFrame, cols: Dict, threshold: int = 5):
-    """
-    Take one table request and processes. It creates the table, and if
-    cell counts 5 or less in any cell, it redacts the whole table. It keeps
-    the title of the table.
+    """Make a crosstab from `cols` in `table`.
+
+    If the crosstab would contain numbers less than or equal to `threshold`, then return
+    "REDACTED" instead.
     """
     # Make crosstab table
     table = pd.crosstab(table[cols[0]], table[cols[1]])
