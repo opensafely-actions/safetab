@@ -4,20 +4,20 @@ from typing import Dict
 import pandas as pd
 
 
-def check_for_low_numbers(table: pd.DataFrame, small_no_limit: int = 5) -> bool:
-    """Does `table` contain numbers less than or equal to `small_no_limit`?"""
+def check_for_low_numbers(table: pd.DataFrame, threshold: int = 5) -> bool:
+    """Does `table` contain numbers less than or equal to `threshold`?"""
     # Convert table into list for iteration
     all_values = table.values.tolist()
 
     # set condition_met to False to start with. This changes if limit breached
     condition_met = False
 
-    # check if retraction needs to occur based on small_no_limit. Default is 5.
+    # check if retraction needs to occur based on threshold. Default is 5.
     for column in all_values:
         for item in column:
             if isinstance(item, str):
                 pass
-            elif item <= small_no_limit:
+            elif item <= threshold:
                 condition_met = True
 
     return condition_met
@@ -34,7 +34,7 @@ def process_table_request(df: pd.DataFrame, variables: Dict, small_no_limit: int
     table_variables = [variables[0], variables[1]]
 
     # Check if redaction needed
-    redaction_needed = check_for_low_numbers(table=table, small_no_limit=small_no_limit)
+    redaction_needed = check_for_low_numbers(table=table, threshold=small_no_limit)
 
     # if redacted needed then return redacted table
     if redaction_needed:
