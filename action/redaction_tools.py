@@ -5,18 +5,7 @@ import pandas as pd
 
 
 def check_for_low_numbers(table: pd.DataFrame, small_no_limit: int = 5) -> bool:
-    """
-    Takes in a dataframe such as 2x2 contingency table and checks each value
-    to see if any cell values are small numbers.
-
-    Args:
-        table (Dataframe): table to be redacted
-        small_no_limit (int): the number at which values should be redacted. Defaults to
-            5.
-
-    returns
-        boolean (redaction_needed): True if needs redaction, False if not.
-    """
+    """Does `table` contain numbers less than or equal to `small_no_limit`?"""
     # Convert table into list for iteration
     all_values = table.values.tolist()
 
