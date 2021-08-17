@@ -1,4 +1,3 @@
-""" this contains useful functions for loading and saving data tables"""
 import itertools
 import os
 import pathlib
