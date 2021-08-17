@@ -2,7 +2,7 @@
 import itertools
 import os
 import pathlib
-from typing import Dict, Optional, Sequence, Union
+from typing import Dict, Iterable, Optional, Sequence, Union
 
 import pandas as pd
 
@@ -31,24 +31,17 @@ def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
     return table
 
 
-def make_output_dirs(
-    table_configs: Dict[str, TableConfig],
-    base_dir: Optional[str] = None,
-):
+def make_output_dirs(table_names: Iterable[str], base_dir: Optional[str] = None):
     """Makes output directories for tables and log files.
 
     Args:
-        table_configs: A mapping of table names to table configurations. The table names
-            are used to make output directories. The table configurations are ignored.
+        table_names: The names of the tables are the names of the output directories.
         base_dir: The base directory, beneath which the output directories are made.
             If `None`, then the base directory is the current directory.
     """
-    folder_names = table_configs
-    if base_dir is None:
-        for folder_name, table_dets in folder_names.items():
-            os.makedirs(folder_name, exist_ok=True)
-    else:
-        os.makedirs(base_dir, exist_ok=True)
-        for folder_name, table_dets in folder_names.items():
-            full_path = os.path.join(base_dir, folder_name)
-            os.makedirs(full_path, exist_ok=True)
+    for table_name in table_names:
+        if base_dir is None:
+            dir_out = table_name
+        else:
+            dir_out = os.path.join(base_dir, table_name)
+        os.makedirs(dir_out, exist_ok=True)

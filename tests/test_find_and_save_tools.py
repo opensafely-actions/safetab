@@ -79,7 +79,6 @@ class TestMakeOutputDirs:
         make_output_dirs(table_configs, "my_base_dir")
         mocked.assert_has_calls(
             [
-                mock.call("my_base_dir", exist_ok=True),
                 mock.call("my_base_dir/my_two_way", exist_ok=True),
                 mock.call("my_base_dir/my_target_two_way", exist_ok=True),
                 mock.call("my_base_dir/my_groupby_two_way", exist_ok=True),
