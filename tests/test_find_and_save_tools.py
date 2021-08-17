@@ -54,23 +54,17 @@ class TestImportData:
             import_data(pathlib.Path("data.xlsx"), {})
 
     @mock.patch("action.find_save_tools.pd.read_csv")
-    def test_variables_are_columns(self, mocked):
-        mocked.return_value = pd.DataFrame(columns=["sex", "has_condition"])
-        import_data(
-            pathlib.Path("data.csv"),
-            {"my_table": {"variables": ["sex", "has_condition"]}},
-        )
+    def test_variables_are_columns(self, mocked, table_configs):
+        mocked.return_value = pd.DataFrame(columns=["sex", "age_band", "has_copd"])
+        import_data(pathlib.Path("data.csv"), table_configs)
         # We're testing that an error wasn't raised, so we don't need to assert
         # anything.
 
     @mock.patch("action.find_save_tools.pd.read_csv")
-    def test_variables_are_not_columns(self, mocked):
-        mocked.return_value = pd.DataFrame(columns=["sex", "has_condition"])
+    def test_variables_are_not_columns(self, mocked, table_configs):
+        mocked.return_value = pd.DataFrame(columns=["sex", "age_band"])  # no has_copd
         with pytest.raises(ImportActionError):
-            import_data(
-                pathlib.Path("data.csv"),
-                {"my_table": {"variables": ["sex", "age_band"]}},
-            )
+            import_data(pathlib.Path("data.csv"), table_configs)
 
 
 @mock.patch("os.makedirs")
