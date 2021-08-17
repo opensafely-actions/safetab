@@ -31,7 +31,7 @@ def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
     return table
 
 
-def make_folders(table_config_json, path=None):
+def make_output_dirs(table_config_json, path=None):
     """
     Makes the output folders for the markdown files to land into based on the json
     provided

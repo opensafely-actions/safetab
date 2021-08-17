@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from action.errors import ImportActionError
-from action.find_save_tools import import_data, make_folders
+from action.find_save_tools import import_data, make_output_dirs
 
 
 @pytest.fixture
@@ -76,7 +76,7 @@ class TestImportData:
 @mock.patch("os.makedirs")
 class TestMakeOutputDirs:
     def test_with_base_dir(self, mocked, table_configs):
-        make_folders(table_configs, "my_base_dir")
+        make_output_dirs(table_configs, "my_base_dir")
         mocked.assert_has_calls(
             [
                 mock.call("my_base_dir", exist_ok=True),
@@ -87,7 +87,7 @@ class TestMakeOutputDirs:
         )
 
     def test_without_base_dir(self, mocked, table_configs):
-        make_folders(table_configs)
+        make_output_dirs(table_configs)
         mocked.assert_has_calls(
             [
                 mock.call("my_two_way", exist_ok=True),

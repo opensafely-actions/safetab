@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence, Union
 
 import pandas as pd
 
-from .find_save_tools import import_data, make_folders
+from .find_save_tools import import_data, make_output_dirs
 from .redaction_tools import make_crosstab
 
 
@@ -111,8 +111,7 @@ def output_tables(
     """
     df = import_data(pathlib.Path(data_csv), table_config)
 
-    # Make folder for tables
-    make_folders(table_config_json=table_config, path=output_dir)
+    make_output_dirs(table_config_json=table_config, path=output_dir)
 
     # Sort the json into options
     two_way_tables: Dict = {}
