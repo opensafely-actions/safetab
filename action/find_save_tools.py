@@ -2,7 +2,7 @@
 import itertools
 import os
 import pathlib
-from typing import Dict, Sequence, Union
+from typing import Dict, Optional, Sequence, Union
 
 import pandas as pd
 
@@ -31,17 +31,20 @@ def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
     return table
 
 
-def make_output_dirs(table_config_json, path=None):
+def make_output_dirs(
+    table_configs: Dict[str, TableConfig],
+    base_dir: Optional[str] = None,
+):
     """
     Makes the output folders for the markdown files to land into based on the json
     provided
     """
-    folder_names = table_config_json
-    if path is None:
+    folder_names = table_configs
+    if base_dir is None:
         for folder_name, table_dets in folder_names.items():
             os.makedirs(folder_name, exist_ok=True)
     else:
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(base_dir, exist_ok=True)
         for folder_name, table_dets in folder_names.items():
-            full_path = os.path.join(path, folder_name)
+            full_path = os.path.join(base_dir, folder_name)
             os.makedirs(full_path, exist_ok=True)

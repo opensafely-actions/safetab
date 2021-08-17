@@ -111,7 +111,7 @@ def output_tables(
     """
     df = import_data(pathlib.Path(data_csv), table_config)
 
-    make_output_dirs(table_config_json=table_config, path=output_dir)
+    make_output_dirs(table_config, output_dir)
 
     # Sort the json into options
     two_way_tables: Dict = {}
