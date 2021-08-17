@@ -5,7 +5,27 @@ import pandas as pd
 import pytest
 
 from action.errors import ImportActionError
-from action.find_save_tools import import_data
+from action.find_save_tools import import_data, make_folders
+
+
+@pytest.fixture
+def table_configs():
+    return {
+        "my_two_way": {
+            "tab_type": "2-way",
+            "variables": ["sex", "age_band"],
+        },
+        "my_target_two_way": {
+            "tab_type": "target-2-way",
+            "target": "has_copd",
+            "variables": ["sex", "age_band"],
+        },
+        "my_groupby_two_way": {
+            "tab_type": "groupby-2-way",
+            "groupby": "age_band",
+            "variables": ["sex", "has_copd"],
+        },
+    }
 
 
 class TestImportData:
@@ -51,3 +71,27 @@ class TestImportData:
                 pathlib.Path("data.csv"),
                 {"my_table": {"variables": ["sex", "age_band"]}},
             )
+
+
+@mock.patch("os.makedirs")
+class TestMakeOutputDirs:
+    def test_with_base_dir(self, mocked, table_configs):
+        make_folders(table_configs, "my_base_dir")
+        mocked.assert_has_calls(
+            [
+                mock.call("my_base_dir", exist_ok=True),
+                mock.call("my_base_dir/my_two_way", exist_ok=True),
+                mock.call("my_base_dir/my_target_two_way", exist_ok=True),
+                mock.call("my_base_dir/my_groupby_two_way", exist_ok=True),
+            ]
+        )
+
+    def test_without_base_dir(self, mocked, table_configs):
+        make_folders(table_configs)
+        mocked.assert_has_calls(
+            [
+                mock.call("my_two_way", exist_ok=True),
+                mock.call("my_target_two_way", exist_ok=True),
+                mock.call("my_groupby_two_way", exist_ok=True),
+            ]
+        )
