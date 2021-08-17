@@ -35,9 +35,13 @@ def make_output_dirs(
     table_configs: Dict[str, TableConfig],
     base_dir: Optional[str] = None,
 ):
-    """
-    Makes the output folders for the markdown files to land into based on the json
-    provided
+    """Makes output directories for tables and log files.
+
+    Args:
+        table_configs: A mapping of table names to table configurations. The table names
+            are used to make output directories. The table configurations are ignored.
+        base_dir: The base directory, beneath which the output directories are made.
+            If `None`, then the base directory is the current directory.
     """
     folder_names = table_configs
     if base_dir is None:
