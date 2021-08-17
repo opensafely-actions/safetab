@@ -1,10 +1,11 @@
 import itertools
-from typing import Dict, Optional, Union
+import pathlib
+from typing import Dict, Optional, Sequence, Union
 
 import pandas as pd
 
-from .find_save_tools import import_data, make_folders
-from .redaction_tools import process_table_request
+from .find_save_tools import import_data, make_output_dirs
+from .redaction_tools import make_crosstab
 
 
 def prettify_tables(table: pd.DataFrame, variables: list) -> str:
@@ -90,7 +91,7 @@ def output_tables(
 ) -> None:
     """
     Takes the list of requests for various table configurations, and processes them
-    by calling process_table_request() on each request. Each group of tables are
+    by calling make_crosstab() on each request. Each group of tables are
     put into folders by that name.
 
     The redacted tables are logged as redacted.
@@ -108,11 +109,9 @@ def output_tables(
         limit (int): limit at which should redact small numbers
 
     """
-    # Load data by calling import_data() function
-    df = import_data(data=data_csv, variable_json=table_config)
+    df = import_data(pathlib.Path(data_csv), table_config)
 
-    # Make folder for tables
-    make_folders(table_config_json=table_config, path=output_dir)
+    make_output_dirs(table_config, output_dir)
 
     # Sort the json into options
     two_way_tables: Dict = {}
@@ -177,7 +176,7 @@ def output_tables(
 def _output_simple_two_way(
     df: pd.DataFrame,
     name_tables: str,
-    table_instructions: Dict,
+    table_instructions: Sequence,
     output_dir: Union[None, str] = None,
     limit: int = 5,
     additional_info: Optional[str] = None,
@@ -199,9 +198,7 @@ def _output_simple_two_way(
             tables that look similar to each other for example copd vs death,
             in both sexes.
     """
-    variable_names, new_table = process_table_request(
-        df, table_instructions, small_no_limit=limit
-    )
+    variable_names, new_table = make_crosstab(df, table_instructions, threshold=limit)
     if additional_info is not None:
         table_name_str = (
             f"{additional_info} - {variable_names[0]} vs {variable_names[1]}"

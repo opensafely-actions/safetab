@@ -1,52 +1,46 @@
-""" this contains useful functions for loading and saving data tables"""
+import itertools
 import os
-from pathlib import PurePosixPath
+import pathlib
+from typing import Dict, Iterable, Optional, Sequence, Union
 
 import pandas as pd
 
 from .errors import ImportActionError
 
+TableConfig = Dict[str, Union[str, Sequence[str]]]
 
-def import_data(variable_json, data="output/input.csv"):
-    """
-    Imports data and checks that the variables are present
 
-    Will accept input file as csv or dta file (stata).
-    """
-    # load the data into a pandas DataFrame depending on ext
-    ext = PurePosixPath(data).suffix
-    if ext == ".csv":
-        df = pd.read_csv(data)
-    elif ext == ".gz":
-        df = pd.read_csv(data, compression="gzip")
-    elif ext == ".dta":
-        df = pd.read_stata(data)
-    elif ext == ".feather":
-        df = pd.read_feather(data)
+def import_data(file_path: pathlib.Path, table_configs: Dict[str, TableConfig]):
+    """Imports data, checking that the required variables are present."""
+    if file_path.suffix == ".csv":
+        table = pd.read_csv(file_path)
+    elif file_path.suffix == ".gz":
+        table = pd.read_csv(file_path, compression="gzip")
+    elif file_path.suffix == ".dta":
+        table = pd.read_stata(file_path)
+    elif file_path.suffix == ".feather":
+        table = pd.read_feather(file_path)
     else:
-        raise ImportActionError("Unsupported filetype attempted to be imported")
+        raise ImportActionError(f"'{file_path.suffix}' is not a supported file-type")
 
-    # checks that the variables defined in the json are column names in the
-    # csv and raises an error if note
-    for table_names, instructions in variable_json.items():
-        if not set(instructions["variables"]).issubset(df.columns.values):
-            raise ImportActionError
+    variables = set(itertools.chain(*[x["variables"] for x in table_configs.values()]))
+    if not variables <= set(table.columns):
+        raise ImportActionError("Missing required variables")
 
-    # returns the csv
-    return df
+    return table
 
 
-def make_folders(table_config_json, path=None):
+def make_output_dirs(table_names: Iterable[str], base_dir: Optional[str] = None):
+    """Makes output directories for tables and log files.
+
+    Args:
+        table_names: The names of the tables are the names of the output directories.
+        base_dir: The base directory, beneath which the output directories are made.
+            If `None`, then the base directory is the current directory.
     """
-    Makes the output folders for the markdown files to land into based on the json
-    provided
-    """
-    folder_names = table_config_json
-    if path is None:
-        for folder_name, table_dets in folder_names.items():
-            os.makedirs(folder_name, exist_ok=True)
-    else:
-        os.makedirs(path, exist_ok=True)
-        for folder_name, table_dets in folder_names.items():
-            full_path = os.path.join(path, folder_name)
-            os.makedirs(full_path, exist_ok=True)
+    for table_name in table_names:
+        if base_dir is None:
+            dir_out = table_name
+        else:
+            dir_out = os.path.join(base_dir, table_name)
+        os.makedirs(dir_out, exist_ok=True)
