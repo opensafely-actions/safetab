@@ -1,7 +1,3 @@
-import numpy as np
-import pandas as pd
-import pytest
-
 from action.create_tables import output_tables, prettify_tables
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
@@ -19,14 +15,6 @@ full_test_json_dict = {
         "groupby": "sex",
     },
 }
-
-
-@pytest.fixture
-def crosstab():
-    index = pd.Index(["M", "F"], name="sex")
-    columns = pd.Index([1, 0], name="copd")
-    data = np.full((len(index), len(columns)), 6)
-    return pd.DataFrame(data, index, columns)
 
 
 def test_prettify_tables(crosstab):

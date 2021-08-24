@@ -8,26 +8,6 @@ from action.errors import ImportActionError
 from action.find_save_tools import import_data, make_output_dirs
 
 
-@pytest.fixture
-def table_configs():
-    return {
-        "my_two_way": {
-            "tab_type": "2-way",
-            "variables": ["sex", "age_band"],
-        },
-        "my_target_two_way": {
-            "tab_type": "target-2-way",
-            "target": "has_copd",
-            "variables": ["sex", "age_band"],
-        },
-        "my_groupby_two_way": {
-            "tab_type": "groupby-2-way",
-            "groupby": "age_band",
-            "variables": ["sex", "has_copd"],
-        },
-    }
-
-
 class TestImportData:
     @mock.patch("action.find_save_tools.pd.read_csv", return_value=pd.DataFrame())
     def test_import_csv_data(self, mocked):
