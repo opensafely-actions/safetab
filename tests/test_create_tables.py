@@ -1,14 +1,10 @@
-import pathlib
+import numpy as np
+import pandas as pd
+import pytest
 
 from action.create_tables import output_tables, prettify_tables
-from action.find_save_tools import import_data
-from action.redaction_tools import make_crosstab
 
 TEST_DATA_CSV = "tests/test_data/test_data.csv"
-
-correct_json_dict = {
-    "simple_2_way_tabs": {"tab_type": "2-way", "variables": ["sex", "ageband", "copd"]}
-}
 
 full_test_json_dict = {
     "simple_2_way_tabs": {"tab_type": "2-way", "variables": ["sex", "ageband", "copd"]},
@@ -25,14 +21,19 @@ full_test_json_dict = {
 }
 
 
-def test_prettify_tables():
+@pytest.fixture
+def crosstab():
+    index = pd.Index(["M", "F"], name="sex")
+    columns = pd.Index([1, 0], name="copd")
+    data = np.full((len(index), len(columns)), 6)
+    return pd.DataFrame(data, index, columns)
 
-    # set up table
-    no_redaction_needed_variables = ["sex", "copd"]
-    test = import_data(pathlib.Path(TEST_DATA_CSV), correct_json_dict)
-    variables, test_table = make_crosstab(test, cols=no_redaction_needed_variables)
 
-    output_str = prettify_tables(table=test_table, variables=variables)
+def test_prettify_tables(crosstab):
+    output_str = prettify_tables(
+        table=crosstab,
+        variables=[crosstab.index.name, crosstab.columns.name],
+    )
     assert isinstance(output_str, str)
     assert output_str[:11] == "sex vs copd"
 
