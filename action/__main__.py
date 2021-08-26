@@ -10,13 +10,13 @@ from action.utils import load_config
 
 
 def convert_config(file_or_string: str) -> Dict:
-    """
-    Takes in a JSON string or a path to a JSON file and outputs
-    the config as Python object such as a dict
+    """Deserializes the JSON given by a string or a path to a file.
+
     Args:
-        file_or_string:
-    Returns:
-        Configuration as loaded JSON
+        file_or_string: Either a JSON string or a path to a JSON file.
+
+    Raises:
+        ArgumentTypeError: There was a problem deserializing the JSON.
     """
     path = Path(file_or_string)
 
