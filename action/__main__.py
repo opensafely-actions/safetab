@@ -19,8 +19,16 @@ def convert_config(file_or_string: str) -> Dict:
         Configuration as loaded JSON
     """
     path = Path(file_or_string)
+
     try:
-        if path.exists():
+        path_exists = path.exists()
+    except OSError:
+        # The name component of the path is too long for the file system. It's likely
+        # that `file_or_string` is a string, so we won't re-raise the error.
+        path_exists = False
+
+    try:
+        if path_exists:
             with path.open() as f:
                 config = json.load(f)
         else:

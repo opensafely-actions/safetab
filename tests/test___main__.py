@@ -22,9 +22,7 @@ class TestConvertConfig:
         long_list = [0] * n
         long_list_as_json = json.dumps(long_list)
         assert len(long_list_as_json) == 3 * n
-
-        with pytest.raises(OSError):
-            __main__.convert_config(long_list_as_json)
+        assert __main__.convert_config(long_list_as_json) == long_list
 
     def test_with_path_to_valid_json(self, tmp_path):
         path = tmp_path / "config.json"
