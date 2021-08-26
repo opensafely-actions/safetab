@@ -1,8 +1,13 @@
+import argparse
 import json
 
 import pytest
 
 from action import __main__
+
+VALID_JSON = '{"key": "value"}'
+VALID_JSON_AS_DICT = {"key": "value"}
+INVALID_JSON = "{'key': 'value'}"  # JSON doesn't like single quotes
 
 
 class TestConvertConfig:
@@ -20,3 +25,25 @@ class TestConvertConfig:
 
         with pytest.raises(OSError):
             __main__.convert_config(long_list_as_json)
+
+    def test_with_path_to_valid_json(self, tmp_path):
+        path = tmp_path / "config.json"
+        with path.open("w", encoding="utf8") as f:
+            f.write(VALID_JSON)
+
+        assert __main__.convert_config(path.as_posix()) == VALID_JSON_AS_DICT
+
+    def test_with_path_to_invalid_json(self, tmp_path):
+        path = tmp_path / "config.json"
+        with path.open("w", encoding="utf8") as f:
+            f.write(INVALID_JSON)
+
+        with pytest.raises(argparse.ArgumentTypeError):
+            __main__.convert_config(path.as_posix())
+
+    def test_with_valid_json(self):
+        assert __main__.convert_config(VALID_JSON) == VALID_JSON_AS_DICT
+
+    def test_with_invalid_json(self):
+        with pytest.raises(argparse.ArgumentTypeError):
+            __main__.convert_config(INVALID_JSON)
