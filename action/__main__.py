@@ -22,10 +22,13 @@ def convert_config(file_or_string: str) -> Dict:
 
     try:
         path_exists = path.exists()
-    except OSError:
-        # The name component of the path is too long for the file system. It's likely
-        # that `file_or_string` is a string, so we won't re-raise the error.
-        path_exists = False
+    except OSError as e:
+        if e.errno == 63:  # File name too long
+            # The name component of the path is too long for the file system. It's
+            # likely that `file_or_string` is a string, so we won't re-raise the error.
+            path_exists = False
+        else:
+            raise e
 
     try:
         if path_exists:

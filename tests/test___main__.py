@@ -1,5 +1,6 @@
 import argparse
 import json
+from unittest import mock
 
 import pytest
 
@@ -23,6 +24,12 @@ class TestConvertConfig:
         long_list_as_json = json.dumps(long_list)
         assert len(long_list_as_json) == 3 * n
         assert __main__.convert_config(long_list_as_json) == long_list
+
+    @mock.patch("action.__main__.Path.exists", side_effect=OSError())
+    def test_raises_oserror(self, mocked):
+        # Test that the function doesn't catch all instances of OSError.
+        with pytest.raises(OSError):
+            __main__.convert_config("config.json")
 
     def test_with_path_to_valid_json(self, tmp_path):
         path = tmp_path / "config.json"
