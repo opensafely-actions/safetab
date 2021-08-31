@@ -4,7 +4,7 @@ define USAGE
 Run commands for a project
 
 Commands:
-	bump		Bumps the version string in action/VERSION, creating a annotated tag for the new version and a commit for action/VERSION. Must be passed major, minor, or patch as the argument
+	bump		Bumps the version string to the next major, minor, or patch version. Must be passed major, minor, or patch as the argument
 	check    	Runs black, isort, and flake8 over all Python files but does not make changes
 	dev_setup  	Sets up development environment
 	fix      	Runs black and isort over all Python files and makes changes
