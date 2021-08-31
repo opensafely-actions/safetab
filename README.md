@@ -22,7 +22,7 @@ actions:
         cohort: output/input.csv
 
   generate_safetabs:
-    run: safetab:v3.0.0 output/input.csv
+    run: safetab:v3.0.1 output/input.csv
     needs: [generate_study_population]
     config:
       output_path: output
@@ -42,7 +42,7 @@ actions:
 The `generate_safetabs` action outputs one table: `sex` vs `age_band`.
 Notice the `run` and `config` properties.
 The `run` property passes a specific input table to a specific version of safetab.
-In this case, the specific input table is *output/input.csv* and the specific version of safetab is v3.0.0.
+In this case, the specific input table is *output/input.csv* and the specific version of safetab is v3.0.1.
 The `config` property passes configuration to safetab; for more information, see *Configuration*.
 
 ### Configuration
