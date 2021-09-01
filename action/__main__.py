@@ -1,4 +1,5 @@
 import argparse
+import errno
 import json
 import os
 from pathlib import Path
@@ -23,7 +24,7 @@ def convert_config(file_or_string: str) -> Dict:
     try:
         path_exists = path.exists()
     except OSError as e:
-        if e.errno == 63:  # File name too long
+        if e.errno == errno.ENAMETOOLONG:  # File name too long
             # The name component of the path is too long for the file system. It's
             # likely that `file_or_string` is a string, so we won't re-raise the error.
             path_exists = False
