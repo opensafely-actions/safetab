@@ -7,6 +7,7 @@ import pandas as pd
 
 from .errors import ImportActionError
 
+
 TableConfig = Dict[str, Union[str, Sequence[str]]]
 
 

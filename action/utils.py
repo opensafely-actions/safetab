@@ -1,5 +1,6 @@
 from typing import Dict
 
+
 DEFAULTS = {"output_path": "safetab_tables", "limit": 5}
 
 

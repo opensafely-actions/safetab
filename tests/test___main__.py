@@ -6,6 +6,7 @@ import pytest
 
 from action import __main__
 
+
 VALID_JSON = '{"key": "value"}'
 VALID_JSON_AS_DICT = {"key": "value"}
 INVALID_JSON = "{'key': 'value'}"  # JSON doesn't like single quotes
