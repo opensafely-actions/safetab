@@ -6,7 +6,7 @@ import pytest
 @pytest.fixture
 def crosstab():
     index = pd.Index(["M", "F"], name="sex")
-    columns = pd.Index([1, 0], name="copd")
+    columns = pd.Index([1, 0], name="has_copd")
     data = np.full((len(index), len(columns)), 6)
     return pd.DataFrame(data, index, columns)
 
