@@ -11,7 +11,7 @@ def test_prettify_tables(crosstab):
         variables=[crosstab.index.name, crosstab.columns.name],
     )
     assert isinstance(output_str, str)
-    assert output_str[:11] == "sex vs copd"
+    assert output_str.startswith("sex vs has_copd")
 
 
 class TestOutputTables:
