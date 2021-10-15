@@ -169,8 +169,8 @@ def output_tables(
                     group_name,
                     variable_pair,
                     output_dir=output_dir,
-                    additional_info=name,
                     limit=limit,
+                    additional_info=name,
                 )
 
 
