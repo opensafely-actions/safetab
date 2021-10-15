@@ -145,11 +145,11 @@ def output_tables(
 
         elif instructions["tab_type"] == "groupby-2-way":
             data = _split_groupby(df, instructions["groupby"])
-            permutations = list(itertools.combinations(instructions["variables"], 2))
+            variable_pairs = list(itertools.combinations(instructions["variables"], 2))
 
             groupby_two_way_tables[name_tables] = {
                 "grouped_datasets": data,
-                "permutations": permutations,
+                "variable_pairs": variable_pairs,
             }
 
     # Call function for each pair of variables for each named group of 2-way tables
@@ -167,17 +167,17 @@ def output_tables(
                 df, group_name, variable_pair, output_dir=output_dir, limit=limit
             )
 
-    # run through all the grouped 2 way tables
-    for folder_names, table_info in groupby_two_way_tables.items():
-
-        for dataset_name, dataset in table_info["grouped_datasets"].items():
-            for combination in table_info["permutations"]:
+    # Call function for each pair of variables for each grouped dataset for each named
+    # group of groupby-2-way tables
+    for group_name, group_data in groupby_two_way_tables.items():
+        for name, dataset in group_data["grouped_datasets"].items():
+            for variable_pair in group_data["variable_pairs"]:
                 _output_simple_two_way(
                     dataset,
-                    folder_names,
-                    combination,
+                    group_name,
+                    variable_pair,
                     output_dir=output_dir,
-                    additional_info=dataset_name,
+                    additional_info=name,
                     limit=limit,
                 )
 
