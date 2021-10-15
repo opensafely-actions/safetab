@@ -1,6 +1,6 @@
 import itertools
 import pathlib
-from typing import Dict, Optional, Sequence, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 
@@ -126,8 +126,7 @@ def output_tables(
     # all two element combinations of variables
     # data split by values of the groupby variable
 
-    two_way_tables: Dict = {}
-    targeted_two_way_tables: Dict = {}
+    two_way_and_target_two_way: Dict[str, List[Tuple]] = {}
     groupby_two_way_tables: Dict = {}
 
     for group_name, group_config in table_config.items():
@@ -137,14 +136,14 @@ def output_tables(
         table_groupby = group_config.get("groupby")
 
         if table_type == "2-way":
-            two_way_tables[group_name] = list(
+            two_way_and_target_two_way[group_name] = list(
                 itertools.combinations(table_variables, 2)
             )
 
         elif table_type == "target-2-way":
-            targeted_two_way_tables[group_name] = []
-            for var in table_variables:
-                targeted_two_way_tables[group_name].append([var, table_target])
+            two_way_and_target_two_way[group_name] = [
+                (x, table_target) for x in table_variables
+            ]
 
         elif table_type == "groupby-2-way":
             grouped_datasets = _split_groupby(df, table_groupby)
@@ -154,16 +153,7 @@ def output_tables(
                 "variable_pairs": variable_pairs,
             }
 
-    # Call function for each pair of variables for each named group of 2-way tables
-    for group_name, variable_pairs in two_way_tables.items():
-        for variable_pair in variable_pairs:
-            _output_simple_two_way(
-                df, group_name, variable_pair, output_dir=output_dir, limit=limit
-            )
-
-    # Call function for each pair of variables for each named group of target-2-way
-    # tables
-    for group_name, variable_pairs in targeted_two_way_tables.items():
+    for group_name, variable_pairs in two_way_and_target_two_way.items():
         for variable_pair in variable_pairs:
             _output_simple_two_way(
                 df, group_name, variable_pair, output_dir=output_dir, limit=limit
