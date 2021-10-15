@@ -1,6 +1,6 @@
 import itertools
 import pathlib
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 
@@ -131,7 +131,7 @@ def output_tables(
     # data split by values of the groupby variable
 
     two_way_and_target_two_way: Dict[str, List[Tuple]] = {}
-    groupby_two_way_tables: Dict = {}
+    groupby_two_way: Dict[str, Dict[str, Any]] = {}
 
     for group_name, group_config in table_config.items():
         table_type = group_config["tab_type"]
@@ -150,7 +150,7 @@ def output_tables(
         elif table_type == "groupby-2-way":
             grouped_datasets = _split_groupby(df, table_groupby)
             variable_pairs = _get_pairs(table_variables)
-            groupby_two_way_tables[group_name] = {
+            groupby_two_way[group_name] = {
                 "grouped_datasets": grouped_datasets,
                 "variable_pairs": variable_pairs,
             }
@@ -161,9 +161,7 @@ def output_tables(
                 df, group_name, variable_pair, output_dir=output_dir, limit=limit
             )
 
-    # Call function for each pair of variables for each grouped dataset for each named
-    # group of groupby-2-way tables
-    for group_name, group_data in groupby_two_way_tables.items():
+    for group_name, group_data in groupby_two_way.items():
         for name, dataset in group_data["grouped_datasets"].items():
             for variable_pair in group_data["variable_pairs"]:
                 _output_simple_two_way(
