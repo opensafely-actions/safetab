@@ -113,7 +113,19 @@ def output_tables(
 
     make_output_dirs(table_config, output_dir)
 
-    # Sort the json into options
+    # For each item in the configuration dictionary, expand the variables as required by
+    # the type of table.
+    #
+    # 2-way:
+    # all two element combinations of variables
+    #
+    # target-2-way:
+    # two element combinations of each variable and the target variable
+    #
+    # groupby-2-way:
+    # all two element combinations of variables
+    # data split by values of the groupby variable
+
     two_way_tables: Dict = {}
     targeted_two_way_tables: Dict = {}
     groupby_two_way_tables: Dict = {}
