@@ -130,25 +130,27 @@ def output_tables(
     targeted_two_way_tables: Dict = {}
     groupby_two_way_tables: Dict = {}
 
-    for name_tables, instructions in table_config.items():
-        if instructions["tab_type"] == "2-way":
-            two_way_tables[name_tables] = list(
-                itertools.combinations(instructions["variables"], 2)
+    for group_name, group_config in table_config.items():
+        table_type = group_config["tab_type"]
+        table_variables = group_config["variables"]
+        table_target = group_config.get("target")
+        table_groupby = group_config.get("groupby")
+
+        if table_type == "2-way":
+            two_way_tables[group_name] = list(
+                itertools.combinations(table_variables, 2)
             )
 
-        elif instructions["tab_type"] == "target-2-way":
-            targeted_two_way_tables[name_tables] = []
-            for var in instructions["variables"]:
-                targeted_two_way_tables[name_tables].append(
-                    [var, instructions["target"]]
-                )
+        elif table_type == "target-2-way":
+            targeted_two_way_tables[group_name] = []
+            for var in table_variables:
+                targeted_two_way_tables[group_name].append([var, table_target])
 
-        elif instructions["tab_type"] == "groupby-2-way":
-            data = _split_groupby(df, instructions["groupby"])
-            variable_pairs = list(itertools.combinations(instructions["variables"], 2))
-
-            groupby_two_way_tables[name_tables] = {
-                "grouped_datasets": data,
+        elif table_type == "groupby-2-way":
+            grouped_datasets = _split_groupby(df, table_groupby)
+            variable_pairs = list(itertools.combinations(table_variables, 2))
+            groupby_two_way_tables[group_name] = {
+                "grouped_datasets": grouped_datasets,
                 "variable_pairs": variable_pairs,
             }
 
