@@ -159,13 +159,12 @@ def output_tables(
                 df, group_name, variable_pair, output_dir=output_dir, limit=limit
             )
 
-    # run through all the targeted 2 way tables
-    for name_tables, table_info in targeted_two_way_tables.items():
-
-        # run through create each table and log if table made
-        for table_instructions in targeted_two_way_tables[name_tables]:
+    # Call function for each pair of variables for each named group of target-2-way
+    # tables
+    for group_name, variable_pairs in targeted_two_way_tables.items():
+        for variable_pair in variable_pairs:
             _output_simple_two_way(
-                df, name_tables, table_instructions, output_dir=output_dir, limit=limit
+                df, group_name, variable_pair, output_dir=output_dir, limit=limit
             )
 
     # run through all the grouped 2 way tables
