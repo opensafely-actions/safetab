@@ -83,6 +83,10 @@ def prettify_tables(table: pd.DataFrame, variables: list) -> str:
     return output_str
 
 
+def _get_pairs(it):
+    return list(itertools.combinations(it, 2))
+
+
 def output_tables(
     data_csv: str,
     table_config: Dict,
@@ -136,9 +140,7 @@ def output_tables(
         table_groupby = group_config.get("groupby")
 
         if table_type == "2-way":
-            two_way_and_target_two_way[group_name] = list(
-                itertools.combinations(table_variables, 2)
-            )
+            two_way_and_target_two_way[group_name] = _get_pairs(table_variables)
 
         elif table_type == "target-2-way":
             two_way_and_target_two_way[group_name] = [
@@ -147,7 +149,7 @@ def output_tables(
 
         elif table_type == "groupby-2-way":
             grouped_datasets = _split_groupby(df, table_groupby)
-            variable_pairs = list(itertools.combinations(table_variables, 2))
+            variable_pairs = _get_pairs(table_variables)
             groupby_two_way_tables[group_name] = {
                 "grouped_datasets": grouped_datasets,
                 "variable_pairs": variable_pairs,
