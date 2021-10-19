@@ -1,6 +1,6 @@
 import itertools
 import pathlib
-from typing import Dict, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 
@@ -83,6 +83,10 @@ def prettify_tables(table: pd.DataFrame, variables: list) -> str:
     return output_str
 
 
+def _get_pairs(it):
+    return list(itertools.combinations(it, 2))
+
+
 def output_tables(
     data_csv: str,
     table_config: Dict,
@@ -113,63 +117,60 @@ def output_tables(
 
     make_output_dirs(table_config, output_dir)
 
-    # Sort the json into options
-    two_way_tables: Dict = {}
-    targeted_two_way_tables: Dict = {}
-    groupby_two_way_tables: Dict = {}
+    # For each item in the configuration dictionary, expand the variables as required by
+    # the type of table.
+    #
+    # 2-way:
+    # all two element combinations of variables
+    #
+    # target-2-way:
+    # two element combinations of each variable and the target variable
+    #
+    # groupby-2-way:
+    # all two element combinations of variables
+    # data split by values of the groupby variable
 
-    for name_tables, instructions in table_config.items():
-        if instructions["tab_type"] == "2-way":
-            two_way_tables[name_tables] = list(
-                itertools.combinations(instructions["variables"], 2)
-            )
+    two_way_and_target_two_way: Dict[str, List[Tuple]] = {}
+    groupby_two_way: Dict[str, Dict[str, Any]] = {}
 
-        elif instructions["tab_type"] == "target-2-way":
-            targeted_two_way_tables[name_tables] = []
-            for var in instructions["variables"]:
-                targeted_two_way_tables[name_tables].append(
-                    [var, instructions["target"]]
-                )
+    for group_name, group_config in table_config.items():
+        table_type = group_config["tab_type"]
+        table_variables = group_config["variables"]
+        table_target = group_config.get("target")
+        table_groupby = group_config.get("groupby")
 
-        elif instructions["tab_type"] == "groupby-2-way":
-            data = _split_groupby(df, instructions["groupby"])
-            permutations = list(itertools.combinations(instructions["variables"], 2))
+        if table_type == "2-way":
+            two_way_and_target_two_way[group_name] = _get_pairs(table_variables)
 
-            groupby_two_way_tables[name_tables] = {
-                "grouped_datasets": data,
-                "permutations": permutations,
+        elif table_type == "target-2-way":
+            two_way_and_target_two_way[group_name] = [
+                (x, table_target) for x in table_variables
+            ]
+
+        elif table_type == "groupby-2-way":
+            grouped_datasets = _split_groupby(df, table_groupby)
+            variable_pairs = _get_pairs(table_variables)
+            groupby_two_way[group_name] = {
+                "grouped_datasets": grouped_datasets,
+                "variable_pairs": variable_pairs,
             }
 
-    # run through all two way tables
-    for name_tables, table_info in two_way_tables.items():
-
-        # run through create each table and log if table made
-        for table_instructions in two_way_tables[name_tables]:
+    for group_name, variable_pairs in two_way_and_target_two_way.items():
+        for variable_pair in variable_pairs:
             _output_simple_two_way(
-                df, name_tables, table_instructions, output_dir=output_dir, limit=limit
+                df, group_name, variable_pair, output_dir=output_dir, limit=limit
             )
 
-    # run through all the targeted 2 way tables
-    for name_tables, table_info in targeted_two_way_tables.items():
-
-        # run through create each table and log if table made
-        for table_instructions in targeted_two_way_tables[name_tables]:
-            _output_simple_two_way(
-                df, name_tables, table_instructions, output_dir=output_dir, limit=limit
-            )
-
-    # run through all the grouped 2 way tables
-    for folder_names, table_info in groupby_two_way_tables.items():
-
-        for dataset_name, dataset in table_info["grouped_datasets"].items():
-            for combination in table_info["permutations"]:
+    for group_name, group_data in groupby_two_way.items():
+        for name, dataset in group_data["grouped_datasets"].items():
+            for variable_pair in group_data["variable_pairs"]:
                 _output_simple_two_way(
                     dataset,
-                    folder_names,
-                    combination,
+                    group_name,
+                    variable_pair,
                     output_dir=output_dir,
-                    additional_info=dataset_name,
                     limit=limit,
+                    additional_info=name,
                 )
 
 
